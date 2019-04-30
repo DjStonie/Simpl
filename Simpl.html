@@ -3,22 +3,40 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Simpl</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" href="IDE/CSS/lib/jquery-linedtextarea.css" />
+    <link rel="stylesheet" type="text/css" href="IDE/CSS/style.css" />
+    <script src="IDE/JS/lib/jquery-3.4.0.min.js"></script>
+    <script src="IDE/JS/lib/jquery-linedtextarea.js"></script>
 </head>
-<body>
-    <div id="buttons">
-            <button id="file">File</button>
-            <button id="help">Help</button> 
-            <button id="Compile">Compile</button> 
-            <button id="Run">run</button> 
-    </div>
+<body>  
+<div class="navbar">
+  <div class="dropdown">
+  <button class="dropbtn" id="file">File</button>
+  <div class="dropdown-content">
+    <a href="#">New</a>
+    <a href="#">Load</a>
+    <a href="#">Save</a>
+    <a href="#">Settings</a>
+    <a href="#">Download consolelog</a>
+    <a href="#">Import</a>
+  </div>
+  </div> 
+  <a href="#" id="help">Help</a> 
+  <div class="dropdown">
+  <button class="dropbtn" id="Compile">Compile</button>
+  <div class="dropdown-content" id="myDropdown">
+    <a href="#">.exe</a>
+    <a href="#">.ino</a>
+    <a href="#" id="compile-c">.c</a>
+  </div>
+  </div>
+  <a href="#" id="Run">Run</a> 
+</div>
     <div id="codeAndConsole">
-        <br>
         <div>
-            <textarea id="code">kode</textarea>
+            <textarea id="code" style="width: 100%; height: 60vh;">kode</textarea>
         </div>
         <br>
         <div>
@@ -29,7 +47,34 @@
         <textarea id="helptext"></textarea>
     </div>
 
-
     
+    <script>
+        $(function() {
+            $("#code").linedtextarea();
+        });
+
+        //Splits each string in an array into its own array
+        //Return value might contain blank spaces among the elements
+        function codeReader(codeLines){
+            for (line in codeLines) {
+                codeLines[line] = codeLines[line].split(" ");
+            }
+            return codeLines;
+        };
+
+        $( "#compile-c" ).click(() => {
+            event.preventDefault();
+            //use return value of codeReader to give to parser
+            //system could save at this point
+            //Splitting on new line to maintain line numbers
+            let toBeParsed = codeReader($("#code").val().split("\n"));
+
+            for (line in toBeParsed) {
+                console.log(toBeParsed[line]);
+            }
+            
+
+        });
+    </script>
 </body>
 </html>
