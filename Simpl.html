@@ -23,7 +23,7 @@
     <a id="newFile">New</a>
     <a id="loadFile">Load</a>
     <a id="saveFile">Save</a>
-    <a href="#">Settings</a>
+    <a id="settings">Settings</a>
     <a id="saveConsole">Download consolelog</a>
     <a href="#">Import</a>
   </div>
@@ -54,14 +54,22 @@
     <!-- Popups -->
     <div>
         <div class="popup" id="savePopup">
-            <h1>Save project</h1>
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Save project</h1>
             <input type="text" placeholder="My first project" id="fileName">
             <button type="button" class="btn" id="saveExtern">Save</button>
         </div>
         <div class="popup" id="loadPopup">
-            <h1>Load project</h1>
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Load project</h1>
             <input type="file" id="loadExtern">
             <button type="button" class="btn" id="load">Load</button>
+        </div>
+        <div class="popup" id="settingsPopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Settings</h1>
+            <button type="button" class="btn" id="codeIDE">Language IDE: English</button>
+            <button type="button" class="btn" id="codeLang">Language code: English</button>
         </div>
     </div>
     <script>
@@ -93,6 +101,16 @@
             //Save console
             $("#saveConsole").click(function() {
               saveConsoleButton();
+            });
+            //Settings
+            $("#settings").click(function() {
+              document.getElementById("settingsPopup").style.display = "block";
+            });
+            //Close ALL popups
+            $(".closePopup").click(function() {
+              document.getElementById("settingsPopup").style.display = "none";
+              document.getElementById("loadPopup").style.display = "none";
+              document.getElementById("savePopup").style.display = "none";
             });
         });
         //Splits each string in an array into its own array

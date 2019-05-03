@@ -97,3 +97,18 @@ body{
   border: 3px solid #f1f1f1;
   z-index: 10;
 }
+
+.closePopup{
+    right: 15px;
+    color: RED;
+    position: absolute;
+    font-size: 14pt;
+}
+
+.popupHeadline{
+    text-align: center;
+}
+
+a:hover{
+    cursor: pointer;
+}
