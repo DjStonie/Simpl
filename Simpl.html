@@ -114,16 +114,13 @@
               document.getElementById("loadPopup").style.display = "none";
               document.getElementById("savePopup").style.display = "none";
             });
-        });
-
-        $( "#compile-c" ).click(() => {
+            $( "#compile-c" ).click(() => {
             event.preventDefault();
             //use return value of codeReader to give to parser
             //system could save at this point
             //Splitting on new line to maintain line numbers
             mainParser(codeReader($("#code").val()));
-
-
+        });
         });
 
     </script>
