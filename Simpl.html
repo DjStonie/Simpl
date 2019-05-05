@@ -115,14 +115,6 @@
               document.getElementById("savePopup").style.display = "none";
             });
         });
-        //Splits each string in an array into its own array
-        //Return value might contain blank spaces among the elements
-        function codeReader(codeLines){
-            for (line in codeLines) {
-                codeLines[line] = codeLines[line].split(" ");
-            }
-            return codeLines;
-        };
 
         $( "#compile-c" ).click(() => {
             event.preventDefault();
