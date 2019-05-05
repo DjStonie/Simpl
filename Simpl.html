@@ -14,6 +14,7 @@
     <script src="IDE/JS/newFile.js"></script>
     <script src="IDE/JS/saveFile.js"></script>
     <script src="IDE/JS/loadFile.js"></script>
+    <script src="IDE/Compiler/mainParser.js"></script>
 </head>
 <body>  
 <div class="navbar">
@@ -76,6 +77,7 @@
         $(function() {
             $("#code").linedtextarea();
         });
+
         $(document).ready(function(){
             //new
             $("#newFile").click(function() {
@@ -127,12 +129,11 @@
             //use return value of codeReader to give to parser
             //system could save at this point
             //Splitting on new line to maintain line numbers
-            let toBeParsed = codeReader($("#code").val().split("\n"));
+            mainParser(codeReader($("#code").val()));
 
-            for (line in toBeParsed) {
-                console.log(toBeParsed[line]);
-            }
+
         });
+
     </script>
 </body>
 </html>
