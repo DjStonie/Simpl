@@ -9,6 +9,11 @@
     <link rel="stylesheet" type="text/css" href="IDE/CSS/style.css" />
     <script src="IDE/JS/lib/jquery-3.4.0.min.js"></script>
     <script src="IDE/JS/lib/jquery-linedtextarea.js"></script>
+    <script src="IDE/JS/lib/FileSaver.js"></script>
+    <!-- our own scripts -->
+    <script src="IDE/JS/newFile.js"></script>
+    <script src="IDE/JS/saveFile.js"></script>
+    <script src="IDE/JS/loadFile.js"></script>
     <script src="IDE/Compiler/mainParser.js"></script>
 </head>
 <body>  
@@ -16,11 +21,11 @@
   <div class="dropdown">
   <button class="dropbtn" id="file">File</button>
   <div class="dropdown-content">
-    <a href="#">New</a>
-    <a href="#">Load</a>
-    <a href="#">Save</a>
-    <a href="#">Settings</a>
-    <a href="#">Download consolelog</a>
+    <a id="newFile">New</a>
+    <a id="loadFile">Load</a>
+    <a id="saveFile">Save</a>
+    <a id="settings">Settings</a>
+    <a id="saveConsole">Download consolelog</a>
     <a href="#">Import</a>
   </div>
   </div> 
@@ -47,13 +52,77 @@
     <div id="helptextbox">
         <textarea id="helptext"></textarea>
     </div>
-
-    
+    <!-- Popups -->
+    <div>
+        <div class="popup" id="savePopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Save project</h1>
+            <input type="text" placeholder="My first project" id="fileName">
+            <button type="button" class="btn" id="saveExtern">Save</button>
+        </div>
+        <div class="popup" id="loadPopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Load project</h1>
+            <input type="file" id="loadExtern">
+            <button type="button" class="btn" id="load">Load</button>
+        </div>
+        <div class="popup" id="settingsPopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Settings</h1>
+            <button type="button" class="btn" id="codeIDE">Language IDE: English</button>
+            <button type="button" class="btn" id="codeLang">Language code: English</button>
+        </div>
+    </div>
     <script>
         $(function() {
             $("#code").linedtextarea();
         });
 
+        $(document).ready(function(){
+            //new
+            $("#newFile").click(function() {
+              newButton();
+            });
+            //Save
+            $("#saveFile").click(function() {
+              document.getElementById("savePopup").style.display = "block";
+            });
+            $("#saveExtern").click(function() {
+              document.getElementById("savePopup").style.display = "none";
+              saveButton(document.getElementById("fileName").value);
+            });
+            //load
+            $("#loadFile").click(function() {
+              document.getElementById("loadPopup").style.display = "block";
+            });
+            $("#load").click(function() {
+              loadButton();
+              document.getElementById("loadPopup").style.display = "none";
+              $("#console").val("");
+            });
+            //Save console
+            $("#saveConsole").click(function() {
+              saveConsoleButton();
+            });
+            //Settings
+            $("#settings").click(function() {
+              document.getElementById("settingsPopup").style.display = "block";
+            });
+            //Close ALL popups
+            $(".closePopup").click(function() {
+              document.getElementById("settingsPopup").style.display = "none";
+              document.getElementById("loadPopup").style.display = "none";
+              document.getElementById("savePopup").style.display = "none";
+            });
+        });
+        //Splits each string in an array into its own array
+        //Return value might contain blank spaces among the elements
+        function codeReader(codeLines){
+            for (line in codeLines) {
+                codeLines[line] = codeLines[line].split(" ");
+            }
+            return codeLines;
+        };
 
         $( "#compile-c" ).click(() => {
             event.preventDefault();
@@ -61,6 +130,7 @@
             //system could save at this point
             //Splitting on new line to maintain line numbers
             mainParser(codeReader($("#code").val()));
+
 
         });
 
