@@ -17,15 +17,15 @@ function codeReader(code){
 //name = name of variable to look up
 //variables = list with lists of variables
 //return = string with type of variable found or error if nothing was found
-function lookUpVar(name, variables){
+function lookUpVar(name){
     for (stack in variables){
-        for (vars in stack){
+        for (vars in variables[stack]){
             if (variables[stack][vars] && name === variables[stack][vars].name){
                 return variables[stack][vars].vartype;
             };
         };
     };
-    return {"type": "error", "errortype": "could not find var"};
+    return {"type": "error", "error": "could not find var"};
 };
 
 //Creates a string with c variable creations
@@ -46,7 +46,7 @@ function varWriter(typeObj, expression){
             break;
         };
 
-    return {"error": "internal", "errortype": "varWriter - no match"}
+    return {"type": "error", "error": "internal varWriter - no match"}
 };
 
 //Tests if a char is a part of a set of chars
@@ -80,9 +80,13 @@ function splitOnOperator(str, operatorList){
         };
         if (foundOperator){
             foundOperator = false;
-        }else{
+        }
+        else{
             currentElement += nextChar;
         };
+    };
+    if (currentElement !== ""){
+        returnList.push(currentElement);
     };
     return returnList;
 };
@@ -111,12 +115,12 @@ function verifyIntExpr(expr){
             }
         }
         else if (testChar(nextChar, numbers)){
-            cantBeOperator = false;
             for (let i = 1; i < exprList[expr].length; i++){
                 if(!testChar(exprList[expr].charAt(i), numbers)){
                     return {"type": "error", "error": "unexpected character"};
                 };
             };
+            cantBeOperator = false;
         }
         else if(testChar(nextChar, letters)){
             varType = lookUpVar(exprList[expr], variables);
@@ -131,7 +135,7 @@ function verifyIntExpr(expr){
             return {"type": "error", "error": "unexpected character"};
         };
     };
-    return {"type": "ok"};
+    return {"type": "int"};
 };
 
 //Verifies if name only contains legal chars
@@ -282,7 +286,7 @@ function lineIdentifier(line){
 //return = 
 function mainParser(codeArray){
     //all current variables
-    //let variables = [[]];
+    variables = [[]];
     for (codeLine in codeArray){
         const statement = lineIdentifier(codeArray[codeLine]);
         switch (statement.type){
