@@ -1,5 +1,8 @@
-//all current variables
-let variables = [[]];
+//GLOBAL
+let variables = [[]]; //all current variables
+const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+const intOperators = ["+","-","/","*"];
 
 //Splits on newline into array
 //Removes white space and changes everything to lower case
@@ -62,6 +65,9 @@ function testChar(char, set){
     return false;
 };
 
+//Splits a string on a list with operators
+//str = string to be split
+//operatorList = list of operators to split by
 function splitOnOperator(str, operatorList){
     let returnList = [];
     let currentElement = "";
@@ -91,22 +97,22 @@ function splitOnOperator(str, operatorList){
     return returnList;
 };
 
+//Tests is a simpl expression results in an int result
+//expr = expression to be tested
+//return = {"type": "int"} if expr is an int otherwise error
 function verifyIntExpr(expr){
-    const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
-    const numbers = ["0","1","2","3","4","5","6","7","8","9"];
-    const operators = ["+","-","/","*"];
-    const exprList = splitOnOperator(expr, operators);
+    const exprList = splitOnOperator(expr, intOperators);
 
     let cantBeOperator = true;
     if (exprList[0] === "-"){
         cantBeOperator = false;
     };
-    if (testChar(exprList[exprList.length - 1], operators)){
+    if (testChar(exprList[exprList.length - 1], intOperators)){
         return {"type": "error", "error": "int expression must end with number"};
     };
     for (expr in exprList){
         let nextChar = exprList[expr].charAt(0);
-        if (testChar(nextChar, operators)){
+        if (testChar(nextChar, intOperators)){
             if (cantBeOperator){
                 return {"type": "error", "error": "unexpected operator"};
             }
@@ -158,6 +164,7 @@ function verifyName(nameStr){
     return {"type": "error", "error": "name error too short"};
 };
 
+//OUT OF USE!!!
 //Tests is a simpl expression results in an int result
 //expr = expression to be tested
 //return = {"type": "int"} if expr is an int otherwise error
