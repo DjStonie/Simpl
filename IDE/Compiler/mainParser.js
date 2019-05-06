@@ -168,6 +168,7 @@ function verifyName(nameStr){
 //Tests is a simpl expression results in an int result
 //expr = expression to be tested
 //return = {"type": "int"} if expr is an int otherwise error
+/*
 function intExpressionHandler(expr){
     const numbers = ["0","1","2","3","4","5","6","7","8","9"];
     const operators = ["+","-","/","*"];
@@ -205,7 +206,7 @@ function intExpressionHandler(expr){
     };
     return {"type": "error", "error": "int epr too short"};
 };
-
+*/
 //Chooses correct handler according to the expected type
 //expr = expression to be passed to correct handler
 //typeExpected = the expected type of expr
