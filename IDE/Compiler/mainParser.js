@@ -1,3 +1,6 @@
+//all current variables
+let variables = [[]];
+
 //Splits on newline into array
 //Removes white space and changes everything to lower case
 //code = string
@@ -59,8 +62,80 @@ function testChar(char, set){
     return false;
 };
 
+function splitOnOperator(str, operatorList){
+    let returnList = [];
+    let currentElement = "";
+    let foundOperator = false;
+    for (let i = 0; i < str.length; i++){
+        let nextChar = str.charAt(i);
+        for (let j = 0; j < operatorList.length; j++){
+            if (nextChar === operatorList[j]){
+                if (currentElement !== ""){
+                    returnList.push(currentElement);
+                    currentElement = "";
+                };
+                returnList.push(nextChar);
+                foundOperator = true;
+            };
+        };
+        if (foundOperator){
+            foundOperator = false;
+        }else{
+            currentElement += nextChar;
+        };
+    };
+    return returnList;
+};
+
+function verifyIntExpr(expr){
+    const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+    const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+    const operators = ["+","-","/","*"];
+    const exprList = splitOnOperator(expr, operators);
+
+    let cantBeOperator = true;
+    if (exprList[0] === "-"){
+        cantBeOperator = false;
+    };
+    if (testChar(exprList[exprList.length - 1], operators)){
+        return {"type": "error", "error": "int expression must end with number"};
+    };
+    for (expr in exprList){
+        let nextChar = exprList[expr].charAt(0);
+        if (testChar(nextChar, operators)){
+            if (cantBeOperator){
+                return {"type": "error", "error": "unexpected operator"};
+            }
+            else{
+                cantBeOperator = true;
+            }
+        }
+        else if (testChar(nextChar, numbers)){
+            cantBeOperator = false;
+            for (let i = 1; i < exprList[expr].length; i++){
+                if(!testChar(exprList[expr].charAt(i), numbers)){
+                    return {"type": "error", "error": "unexpected character"};
+                };
+            };
+        }
+        else if(testChar(nextChar, letters)){
+            varType = lookUpVar(exprList[expr], variables);
+            if (varType.error){
+                return varType;
+            }
+            else if (varType === "int"){
+                cantBeOperator = false;
+            }
+        }
+        else{
+            return {"type": "error", "error": "unexpected character"};
+        };
+    };
+    return {"type": "ok"};
+};
+
 //Verifies if name only contains legal chars
-//nameStr = string with the potential new name that is to be testes
+//nameStr = string with the potential new name that is to be tested
 //return = {"type": "ok"} if things go well otherwise an error
 function verifyName(nameStr){
     const numbers = ["0","1","2","3","4","5","6","7","8","9"];
@@ -76,7 +151,7 @@ function verifyName(nameStr){
         };
         return {"type": "error", "error": "naming error, var cannot start with number"};
     };
-    return {"type": "error", "error": "name error too short"};;
+    return {"type": "error", "error": "name error too short"};
 };
 
 //Tests is a simpl expression results in an int result
@@ -117,7 +192,7 @@ function intExpressionHandler(expr){
         };
         return {"type": "error", "error": "int must end with number"};
     };
-    return {"type": "error", "error": "int epr too short"}
+    return {"type": "error", "error": "int epr too short"};
 };
 
 //Chooses correct handler according to the expected type
@@ -127,7 +202,8 @@ function intExpressionHandler(expr){
 function expressionHandler(expr, typeExpected){
     switch (typeExpected){
         case "int":
-            return intExpressionHandler(expr);
+            //return intExpressionHandler(expr);
+            return verifyIntExpr(expr);
             break;
     };
     return {"type": "error", "error": "could not find handler for expression"}
@@ -206,7 +282,7 @@ function lineIdentifier(line){
 //return = 
 function mainParser(codeArray){
     //all current variables
-    let variables = [[]];
+    //let variables = [[]];
     for (codeLine in codeArray){
         const statement = lineIdentifier(codeArray[codeLine]);
         switch (statement.type){
