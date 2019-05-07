@@ -2,7 +2,7 @@
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 const numbers = ["0","1","2","3","4","5","6","7","8","9"];
 const intOperators = ["+","-","/","*"];
-const boolOperators = ["=",">","<","and","or","&","|"];
+const boolOperators = ["=",">","<","&","|"];
 
 let variables = [[]]; //all current variables
 
@@ -56,6 +56,15 @@ function varWriter(typeObj, expression){
     return {"type": "error", "error": "internal varWriter - no match"}
 };
 
+function testStr(str, set){
+    for (char in str){
+        if(testChar(str.charAt(char), set)){
+            return true;
+        };
+    };
+    return false;
+};
+
 //Tests if a char is a part of a set of chars
 //char = char to be tested
 //set = set to be tested against
@@ -101,11 +110,15 @@ function splitOnOperator(str, operatorList){
     return returnList;
 };
 
-function verifyBoolExpr(expr){
-    const exprList = splitOnOperator(expr, boolOperators);
+function verifyBoolExpr(expression){
+    const exprList = splitOnOperator(expression, boolOperators);
     let cantBeOperator = true;
 
-    for (expr in exprList){
+    if(testChar(exprList[exprList.length - 1], boolOperators)){
+        return {"type": "error", "error": "unexpected operator - bool ending in operator"}
+    };
+
+    for (let expr = 0; expr < exprList.length; expr++){
         const nextChar = exprList[expr].charAt(0);
         if (testChar(nextChar, boolOperators)){
             if (cantBeOperator){
@@ -120,6 +133,11 @@ function verifyBoolExpr(expr){
             if (intExpr.type !== "int"){
                 return intExpr;
             };
+            const followingIndexIsAnOp = expr < exprList.length - 1 && testChar(exprList[expr + 1], boolOperators);
+            const leadingIndexIsAnOp = expr - 1 > 0 && testChar(exprList[expr - 1], boolOperators);
+            if (!(followingIndexIsAnOp || leadingIndexIsAnOp)){
+                return {"type": "error", "error": "missing bool operator"};
+            };
             cantBeOperator = false;
         }
         else if (testChar(nextChar, letters)){
@@ -128,25 +146,45 @@ function verifyBoolExpr(expr){
                 cantBeOperator = false;
             }
             else{
-                //test if int starting with variable
-                //test if bool var
-                const varType = lookUpVar(exprList[expr], variables);
-                if (varType.error){
-                    return varType;
-                }
-                else if (varType === "bool"){
+                if (testStr(exprList[expr]), intOperators){
+                    const intExpr = verifyIntExpr(exprList[expr]);
+                    if (intExpr.type !== "int"){
+                        return intExpr;
+                    };
+                    const followingIndexIsAnOp = expr < (exprList.length - 1) && testChar(exprList[expr + 1], boolOperators);
+                    const leadingIndexIsAnOp = (expr - 1) > 0 && testChar(exprList[expr - 1], boolOperators);
+                    if (!(followingIndexIsAnOp || leadingIndexIsAnOp)){
+                        return {"type": "error", "error": "missing bool operator"};
+                    };
                     cantBeOperator = false;
+                }
+                else{
+                    const varType = lookUpVar(exprList[expr]);
+                    if (varType.error){
+                        return varType;
+                    }
+                    else if (varType === "bool"){
+                        cantBeOperator = false;
+                    }
+                    else if (varType === "int"){
+                        const followingIndexIsAnOp = expr < exprList.length - 1 && testChar(exprList[expr + 1], boolOperators);
+                        const leadingIndexIsAnOp = expr - 1 > 0 && testChar(exprList[expr - 1], boolOperators);
+                        if (!(followingIndexIsAnOp || leadingIndexIsAnOp)){
+                            return {"type": "error", "error": "missing bool operator"};
+                        };
+                        cantBeOperator = false;
+                        
+                    };
                 };
+                //test if int starting with variable
+                //test if bool var               
             };
-        }
-        else{
-            return {"type": "error", "error": "unexpected character"};
         };
     };
     return {"type": "bool"};
 };
 
-//Tests is a simpl expression results in an int result
+//Tests if a simpl expression results in an int result
 //expr = expression to be tested
 //return = {"type": "int"} if expr is an int otherwise error
 function verifyIntExpr(expr){
@@ -178,7 +216,7 @@ function verifyIntExpr(expr){
             cantBeOperator = false;
         }
         else if(testChar(nextChar, letters)){
-            const varType = lookUpVar(exprList[expr], variables);
+            const varType = lookUpVar(exprList[expr]);
             if (varType.error){
                 return varType;
             }
