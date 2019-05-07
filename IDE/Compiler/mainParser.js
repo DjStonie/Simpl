@@ -3,6 +3,7 @@ let variables = [[]]; //all current variables
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 const numbers = ["0","1","2","3","4","5","6","7","8","9"];
 const intOperators = ["+","-","/","*"];
+const boolOperators = ["=",">","<"];
 
 //Splits on newline into array
 //Removes white space and changes everything to lower case
@@ -28,6 +29,7 @@ function lookUpVar(name){
             };
         };
     };
+    console.log(name);
     return {"type": "error", "error": "could not find var"};
 };
 
@@ -46,6 +48,8 @@ function varWriter(typeObj, expression){
         case "string":
             break;
         case "bool":
+            //not correct syntax! false and true not handled
+            return  typeObj.vartype + " " + typeObj.name + " = " + expression + ";\n";
             break;
         };
 
@@ -97,13 +101,58 @@ function splitOnOperator(str, operatorList){
     return returnList;
 };
 
+function verifyBoolExpr(expr){
+    const exprList = splitOnOperator(expr, boolOperators);
+    let cantBeOperator = true;
+
+    for (expr in exprList){
+        const nextChar = exprList[expr].charAt(0);
+        if (testChar(nextChar, boolOperators)){
+            if (cantBeOperator){
+                return {"type": "error", "error": "unexpected operator"};
+            }
+            else{
+                cantBeOperator = true;
+            };
+        }
+        else if (nextChar === "-" || testChar(nextChar, numbers)){
+            const intExpr = verifyIntExpr(exprList[expr]);
+            if (intExpr.type !== "int"){
+                return intExpr;
+            };
+            cantBeOperator = false;
+        }
+        else if (testChar(nextChar, letters)){
+            if (exprList[expr] === "true" || exprList[expr] === "false"){
+                //maybe change values of true and false here?
+                cantBeOperator = false;
+            }
+            else{
+                //test if int starting with variable
+                //test if bool var
+                const varType = lookUpVar(exprList[expr], variables);
+                if (varType.error){
+                    return varType;
+                }
+                else if (varType === "bool"){
+                    cantBeOperator = false;
+                };
+            };
+        }
+        else{
+            return {"type": "error", "error": "unexpected character"};
+        };
+    };
+    return {"type": "bool"};
+};
+
 //Tests is a simpl expression results in an int result
 //expr = expression to be tested
 //return = {"type": "int"} if expr is an int otherwise error
 function verifyIntExpr(expr){
     const exprList = splitOnOperator(expr, intOperators);
-
     let cantBeOperator = true;
+
     if (exprList[0] === "-"){
         cantBeOperator = false;
     };
@@ -111,7 +160,7 @@ function verifyIntExpr(expr){
         return {"type": "error", "error": "int expression must end with number"};
     };
     for (expr in exprList){
-        let nextChar = exprList[expr].charAt(0);
+        const nextChar = exprList[expr].charAt(0);
         if (testChar(nextChar, intOperators)){
             if (cantBeOperator){
                 return {"type": "error", "error": "unexpected operator"};
@@ -129,7 +178,7 @@ function verifyIntExpr(expr){
             cantBeOperator = false;
         }
         else if(testChar(nextChar, letters)){
-            varType = lookUpVar(exprList[expr], variables);
+            const varType = lookUpVar(exprList[expr], variables);
             if (varType.error){
                 return varType;
             }
@@ -148,8 +197,8 @@ function verifyIntExpr(expr){
 //nameStr = string with the potential new name that is to be tested
 //return = {"type": "ok"} if things go well otherwise an error
 function verifyName(nameStr){
-    const numbers = ["0","1","2","3","4","5","6","7","8","9"];
-    const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+    //const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+    //const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
     if (nameStr.length > 0){
         if (testChar(nameStr.charAt(0), letters)){
             for (let i = 1; i < nameStr.length; i++){
@@ -217,8 +266,11 @@ function expressionHandler(expr, typeExpected){
             //return intExpressionHandler(expr);
             return verifyIntExpr(expr);
             break;
+        case "bool":
+            return verifyBoolExpr(expr);
+            break;
     };
-    return {"type": "error", "error": "could not find handler for expression"}
+    return {"type": "error", "error": "internal - could not find handler for expression"}
 };
 
 //verifies variables and pushes them onto stack
@@ -255,7 +307,7 @@ function variableHandler(newVar, line, variables){
 //line = string with a simpl code line
 //return = json with information about type simpl code
 function lineIdentifier(line){
-    const simplType = [{"id": "int"}, {"id": "void"}];
+    const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
     const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
     for (rule in simplType){
         if (line.startsWith(simplType[rule].id)){
