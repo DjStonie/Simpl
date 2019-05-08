@@ -8,10 +8,30 @@ const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
 
 let variables = [[]]; //all current variables
 
+//Chooses correct handler according to the expected type
+//expr = expression to be passed to correct handler
+//typeExpected = the expected type of expr
+//return =  result of specific handler or error if no handler could be found
+function expressionHandler(expr, typeExpected){
+    switch (typeExpected){
+        case "int":
+            //return intExpressionHandler(expr);
+            return verifyIntExpr(expr);
+            break;
+        case "bool":
+            return verifyBoolExpr(expr);
+            break;
+    };
+    return {"type": "error", "error": "internal - could not find handler for expression"}
+};
+
 //Identifies contents of a line of simpl code
 //line = string with a simpl code line
 //return = json with information about type simpl code
 function lineIdentifier(line){
+    if (line === "}"){
+        return {"type": "end"};
+    };
     for (rule in simplType){
         if (line.startsWith(simplType[rule].id)){
             if (simplType[rule].id === "void"){
@@ -41,7 +61,9 @@ function lineIdentifier(line){
             return {"type": "conditional", "contype": simplConditional[rule].id};
         };
     };
-    return {"type": "error", "error": "Keyword not found"};
+    if (line.length > 0){
+        return {"type": "error", "error": "Keyword not found"};
+    }
 };
 
 //controls parsing
@@ -50,18 +72,27 @@ function lineIdentifier(line){
 function mainParser(codeArray){
     //all current variables
     variables = [[]];
+    let indentLvl = 0;
+
     for (codeLine in codeArray){
         const statement = lineIdentifier(codeArray[codeLine]);
         switch (statement.type){
             case "error":
                 console.log(statement.error);
                 break;
+            case "end":
+                indentLvl -= 1;
+                variables[0].pop();
+                console.log("}");
+                break;
             case "function":
                 break;
             case "conditional":
-                    break;
+                console.log(conditionalHandler(statement, codeLine, codeArray));
+                indentLvl += 1;
+                break;
             case "var":
-                console.log(variableHandler(statement, codeArray[codeLine], variables));
+                console.log(variableHandler(statement, codeArray[codeLine]));
                 break;
             case "list":
                 break;
@@ -69,5 +100,8 @@ function mainParser(codeArray){
                 //report error
                 break;
         };
+    };
+    if(indentLvl < 0 || indentLvl > 0){
+        return {"type": "error", "error": "indent error"};
     };
 };

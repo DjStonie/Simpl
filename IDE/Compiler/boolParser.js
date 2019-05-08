@@ -17,7 +17,7 @@ function verifyBoolExpr(expression){
         const nextChar = exprList[expr].charAt(0);
         if (testChar(nextChar, boolOperators)){
             if (cantBeOperator){
-                return {"type": "error", "error": "unexpected operator"};
+                return {"type": "error", "error": "unexpected operator", "char": nextChar};
             }
             else{
                 cantBeOperator = true;
@@ -38,6 +38,7 @@ function verifyBoolExpr(expression){
                 cantBeOperator = false;
             }
             else{
+                cantBeOperator = false;
                 if (testStr(exprList[expr], intOperators)){
                     const intExpr = verifyIntExpr(exprList[expr]);
                     if (intExpr.type !== "int"){
@@ -46,7 +47,6 @@ function verifyBoolExpr(expression){
                     if (!findBoolOperator(expr, exprList)){
                         return {"type": "error", "error": "missing bool operator"};
                     };
-                    cantBeOperator = false;
                 }
                 else{
                     const varType = lookUpVar(exprList[expr]);
@@ -54,12 +54,13 @@ function verifyBoolExpr(expression){
                         return varType;
                     }
                     else if (varType === "bool"){
-                        cantBeOperator = false;
-                    }/* Should not matter as expression is tested earlier -> add new tests as new types are added
+                        //cantBeOperator = false;
+                    }
                     else if (varType === "int"){
-                        
-                        
-                    };*/
+                        if (!findBoolOperator(expr, exprList)){
+                            return {"type": "error", "error": "missing bool operator"};
+                        };
+                    }
                 };            
             };
         };
