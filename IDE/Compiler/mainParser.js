@@ -37,7 +37,7 @@ function lineIdentifier(line){
             if (simplType[rule].id === "void"){
                 const endOfName = line.indexOf("(");
                 if (endOfName > 0){
-                    return {"type": "function", "functiontype": simplType[rule].id};
+                    return {"type": "function", "functiontype": simplType[rule].id, "operator": endOfName};
                 };
                 return {"type": "error", "error": "void but no function"};
             };
@@ -87,6 +87,7 @@ function mainParser(codeArray){
                     console.log("};");
                     break;
                 case "function":
+                    console.log(functionHandler(statement, codeArray[codeLine]));
                     break;
                 case "conditional":
                     console.log(conditionalHandler(statement, codeLine, codeArray));
@@ -103,7 +104,7 @@ function mainParser(codeArray){
             };
         };
     };
-    if(indentLvl < 0 || indentLvl > 0){
+    if(indentLvl !== 0){
         return {"type": "error", "error": "indent error"};
     };
 };
