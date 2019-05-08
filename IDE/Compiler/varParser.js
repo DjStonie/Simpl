@@ -39,29 +39,12 @@ function varWriter(typeObj, expression){
     return {"type": "error", "error": "internal varWriter - no match"}
 };
 
-//Chooses correct handler according to the expected type
-//expr = expression to be passed to correct handler
-//typeExpected = the expected type of expr
-//return =  result of specific handler or error if no handler could be found
-function expressionHandler(expr, typeExpected){
-    switch (typeExpected){
-        case "int":
-            //return intExpressionHandler(expr);
-            return verifyIntExpr(expr);
-            break;
-        case "bool":
-            return verifyBoolExpr(expr);
-            break;
-    };
-    return {"type": "error", "error": "internal - could not find handler for expression"}
-};
-
 //verifies variables and pushes them onto stack
 //newVar = json with information about a new variable
 //line = line of simpl code with variable declaration
 //variables = all current variables
 //return = result of varWriter() or error
-function variableHandler(newVar, line, variables){
+function variableHandler(newVar, line){
     //verify name
     const name = line.substring(newVar.vartype.length, newVar.operator);
     const verifiedName = verifyName(name);
