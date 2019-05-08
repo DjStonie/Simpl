@@ -87,6 +87,7 @@ function mainParser(codeArray){
                     console.log("};");
                     break;
                 case "function":
+                    console.log(functionHandler(statement, codeArray[codeLine]));
                     break;
                 case "conditional":
                     console.log(conditionalHandler(statement, codeLine, codeArray));

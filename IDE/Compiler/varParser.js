@@ -62,8 +62,9 @@ function variableHandler(newVar, line){
     };
     //create new variable if no type error
     if (newVar.vartype === expressionType.type){
-        newVar = {...newVar, "name": name};
-        variables[0].push(newVar);
+        //newVar = {...newVar, "name": name};
+        //variables[0].push(newVar);
+        variables[0].push({"vartype": newVar.vartype, "name": name});
         return varWriter(newVar, expression);
     };
     return {"type": "error", "error": "Type error"}

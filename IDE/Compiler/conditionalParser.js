@@ -22,14 +22,15 @@ function conditionalHandler(conditional, codeLine, codeArray){
         return {"type": "error", "error": "conditional syntax - missing )"};
     };
     const condition = codeArray[codeLine].substring(conditional.contype.length + 1, endOfCondition);
+    if (condition === ""){
+        return {"type": "error", "error": "missing boolean condition"};
+    };
     verfiedCondition = verifyBoolExpr(condition);
     if (verfiedCondition.error){
         return verfiedCondition; //maybe expand error message?
     };
     if (codeArray[codeLine].charAt(codeArray[codeLine].length - 1) === "{"){
         return conditionalWriter(conditional, condition);
-    }
-    else{
-        return {"type": "error", "error": "syntax missing { at end of line"};
     };
+    return {"type": "error", "error": "syntax missing { at end of line"};
 };
