@@ -1,12 +1,4 @@
-/*
-function nestedHandler(codeLine, codeArray){
-    while(codeArray[codeLine] !== "}"){
-        if (codeArray[codeLine].indexOf("{") > 0){
-
-        }
-    }
-};
-*/
+//maybe doesnt need to test - just write
 function conditionalWriter(conditional, condition){
     switch(conditional.contype){
         case "if":
@@ -14,8 +6,11 @@ function conditionalWriter(conditional, condition){
             return newLine;
             break;             
         case "for":
+        return {"type": "error", "error": "internal error conditionalWriter - no match - for"}
             break;
         case "while":
+            const newLine2 = conditional.contype + " (" + condition + "){\n";
+            return newLine2;
             break;
         };
     return {"type": "error", "error": "internal error conditionalWriter - no match"}
