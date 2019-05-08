@@ -75,30 +75,32 @@ function mainParser(codeArray){
     let indentLvl = 0;
 
     for (codeLine in codeArray){
-        const statement = lineIdentifier(codeArray[codeLine]);
-        switch (statement.type){
-            case "error":
-                console.log(statement.error);
-                break;
-            case "end":
-                indentLvl -= 1;
-                variables[0].pop();
-                console.log("}");
-                break;
-            case "function":
-                break;
-            case "conditional":
-                console.log(conditionalHandler(statement, codeLine, codeArray));
-                indentLvl += 1;
-                break;
-            case "var":
-                console.log(variableHandler(statement, codeArray[codeLine]));
-                break;
-            case "list":
-                break;
-            default:
-                //report error
-                break;
+        if (codeArray[codeLine] !== ""){ //move to codereader?
+            const statement = lineIdentifier(codeArray[codeLine]);
+            switch (statement.type){
+                case "error":
+                    console.log(statement.error);
+                    break;
+                case "end":
+                    indentLvl -= 1;
+                    variables[0].pop();
+                    console.log("};");
+                    break;
+                case "function":
+                    break;
+                case "conditional":
+                    console.log(conditionalHandler(statement, codeLine, codeArray));
+                    indentLvl += 1;
+                    break;
+                case "var":
+                    console.log(variableHandler(statement, codeArray[codeLine]));
+                    break;
+                case "list":
+                    break;
+                default:
+                    //report error
+                    break;
+            };
         };
     };
     if(indentLvl < 0 || indentLvl > 0){
