@@ -31,10 +31,10 @@
     <a id="saveFile">Save</a>
     <a id="settings">Settings</a>
     <a id="saveConsole">Download consolelog</a>
-    <a href="#">Import</a>
+    <a id="import">Import</a>
   </div>
   </div> 
-  <a href="#" id="help">Help</a> 
+  <a id="help">Help</a> 
   <div class="dropdown">
   <button class="dropbtn" id="Compile">Compile</button>
   <div class="dropdown-content" id="myDropdown">
@@ -45,17 +45,23 @@
   </div>
   <a href="#" id="Run">Run</a> 
 </div>
-    <div id="codeAndConsole">
-        <div>
-            <textarea id="code" style="width: 100%; height: 60vh;">kode</textarea>
+    <div style="display: flex;">
+        <div id="codeAndConsole" style="width: 100%;">
+            <div>
+                <textarea id="importCode" type="hidden" style="display: none;"></textarea>
+                <textarea id="code" style="width: 98%; height: 60vh; padding-top: 0.4em;">kode</textarea>
+            </div>
+            <br>
+            <div>
+                <textarea readonly id="console" style="width: 98%; height: 21vh; padding-top: 0.4em;"></textarea>
+                <textarea id="consoleInput" style="width: 99.6%; resize: none;"></textarea>
+            </div>
         </div>
-        <br>
-        <div>
-            <textarea id="console">console</textarea>
+        <div id="helptextbox" style="width: 30%; min-height: 100%; margin-left: 10px;">
+            <a class="closeHelp">&cross;</a>
+            <h1>Help</h1>
+            <textarea id="helptext" style="width: 95%; height: 80vh;">hjælp</textarea>
         </div>
-    </div>
-    <div id="helptextbox">
-        <textarea id="helptext"></textarea>
     </div>
     <!-- Popups -->
     <div>
@@ -77,10 +83,27 @@
             <button type="button" class="btn" id="codeIDE">Language IDE: English</button>
             <button type="button" class="btn" id="codeLang">Language code: English</button>
         </div>
+        <div class="popup" id="importPopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline">Import project</h1>
+            <input type="file" id="importExtern">
+            <button type="button" class="btn" id="importButton">Import</button>
+        </div>
     </div>
     <script>
         $(function() {
             $("#code").linedtextarea();
+            $("#console").linedtextarea();
+            $("#helptext").linedtextarea();
+            document.getElementById("helptextbox").style.display = "none";
+            var linedwrap = document.getElementsByClassName("linedwrap");
+            var linedtextarea = document.getElementsByClassName("linedtextarea");
+            linedwrap[0].style.width = "100%";
+            linedtextarea[0].style.marginLeft = "50px";
+            linedwrap[1].style.width = "100%";
+            linedtextarea[1].style.marginLeft = "50px";
+            document.getElementById("code").style.width = "98%";
+            document.getElementById("console").style.width = "98%";
         });
 
         $(document).ready(function(){
@@ -113,11 +136,27 @@
             $("#settings").click(function() {
               document.getElementById("settingsPopup").style.display = "block";
             });
+            //Import
+            $("#import").click(function() {
+              document.getElementById("importPopup").style.display = "block";
+            });
+            $("#importButton").click(function() {
+              importButton();
+              document.getElementById("importPopup").style.display = "none";
+            });
             //Close ALL popups
             $(".closePopup").click(function() {
               document.getElementById("settingsPopup").style.display = "none";
               document.getElementById("loadPopup").style.display = "none";
               document.getElementById("savePopup").style.display = "none";
+              document.getElementById("importPopup").style.display = "none";
+            });
+            //Help
+            $("#help").click(function() {
+              document.getElementById("helptextbox").style.display = "block";
+            });
+            $(".closeHelp").click(function() {
+              document.getElementById("helptextbox").style.display = "none";
             });
             $( "#compile-c" ).click(() => {
                 event.preventDefault();
