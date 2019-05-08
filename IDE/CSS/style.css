@@ -105,10 +105,21 @@ body{
     font-size: 14pt;
 }
 
+.closeHelp{
+    right: 20px;
+    color: RED;
+    position: absolute;
+    font-size: 18pt;
+}
+
 .popupHeadline{
     text-align: center;
 }
 
 a:hover{
     cursor: pointer;
+}
+
+.linedwrap{
+    padding: 0px;
 }
