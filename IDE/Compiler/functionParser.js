@@ -1,4 +1,8 @@
-function functionsArgHandler(argStr){
+function functionWriter(newFunc, args, name){
+    return newFunc.functiontype + " " + name + "(" + args + "){";
+};
+
+function functionArgHandler(argStr){
     const argList = argStr.split(",");
     for (arg in argList){
         for (rule in simplType){
@@ -26,12 +30,24 @@ function functionsArgHandler(argStr){
 
 function functionHandler(newFunc, line){
     if(line.charAt(line.length - 1) === "{"){
-        const argStartIndex = newFunc.operator + 1;
-        const argEndIndex = line.index(")");
+        //const argStartIndex = line.indexOf("(");
+        const argEndIndex = line.indexOf(")");
         if (argEndIndex < 0){
             return {"type": "error", "error": "function syntax - missing )"};
         };
-        const condition = codeArray[codeLine].substring(conditional.contype.length + 1, endOfCondition);
+        const name = line.substring(newFunc.functiontype.length, newFunc.operator);
+        const verifiedName = verifyName(name);
+        if (verifiedName.error){
+            return verifiedName;
+        };
+        const args = line.substring(newFunc.operator + 1, argEndIndex);
+        if(args !== ""){
+            const argCheck = functionArgHandler(args);
+            if (argCheck.error){
+                return argCheck;
+            };
+        };
+        return functionWriter(newFunc, args, name);
     }
     else{
         return {"type": "error", "error": "syntax missing { at end of line"};

@@ -23,7 +23,7 @@ function conditionalHandler(conditional, codeLine, codeArray){
     };
     const condition = codeArray[codeLine].substring(conditional.contype.length + 1, endOfCondition);
     if (condition === ""){
-        return {"type": "error", "error": "missing boolean condition"};
+        return {"type": "error", "error": "conditional missing boolean condition"};
     };
     verfiedCondition = verifyBoolExpr(condition);
     if (verfiedCondition.error){

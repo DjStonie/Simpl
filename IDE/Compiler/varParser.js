@@ -65,7 +65,7 @@ function variableHandler(newVar, line){
         //newVar = {...newVar, "name": name};
         //variables[0].push(newVar);
         variables[0].push({"vartype": newVar.vartype, "name": name});
-        return varWriter(newVar, expression);
+        return varWriter({...newVar, "name": name}, expression);
     };
     return {"type": "error", "error": "Type error"}
 };
