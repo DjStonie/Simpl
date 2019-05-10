@@ -6,7 +6,7 @@ function conditionalWriter(conditional, condition){
             return newLine;
             break;             
         case "for":
-        return {"type": "error", "error": "internal error conditionalWriter - no match - for"}
+            return {"type": "error", "error": "internal error conditionalWriter - no match - for"};
             break;
         case "while":
             const newLine2 = conditional.contype + " (" + condition + "){\n";

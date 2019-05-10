@@ -22,7 +22,7 @@ function expressionHandler(expr, typeExpected){
             return verifyBoolExpr(expr);
             break;
     };
-    return {"type": "error", "error": "internal - could not find handler for expression"}
+    return {"type": "error", "error": "internal - could not find handler for expression"};
 };
 
 //Identifies contents of a line of simpl code
@@ -47,7 +47,10 @@ function lineIdentifier(line){
             //test for function or variable declaration
             for (let i = simplType[rule].id.length; i < line.length; i++){
                 if (line.charAt(i) === "("){
-                    return {"type": "function", "functiontype": simplType[rule].id, "operator": i};
+                    if (line.indexOf("{") > 0){
+                        return {"type": "function", "functiontype": simplType[rule].id, "operator": i};
+                    }
+                    return {"type": "error", "error": "syntax missing {"};
                 };
                 if (line.charAt(i) === "="){
                     return {"type": "var", "vartype": simplType[rule].id, "operator": i};                           
@@ -60,6 +63,15 @@ function lineIdentifier(line){
         if (line.startsWith(simplConditional[rule].id + "(")){
             return {"type": "conditional", "contype": simplConditional[rule].id};
         };
+    };
+    //for all functions
+    for (func in functions){
+        if (line.startsWith(functions[func].name + "(")){
+            return {"type": "function", "functiontype": "call", "name": functions[func].name};
+        };
+    };
+    if (line.startsWith("return")){
+        return {"type": "return"};
     };
     if (line.length > 0){
         return {"type": "error", "error": "Keyword not found"};
@@ -87,7 +99,12 @@ function mainParser(codeArray){
                     console.log("};");
                     break;
                 case "function":
-                    console.log(functionHandler(statement, codeArray[codeLine]));
+                    if (statement.functiontype === "call"){
+                        console.log(functionCallHandler(statement, codeArray[codeLine]));
+                    }
+                    else {
+                        console.log(functionHandler(statement, codeArray[codeLine]));
+                    }
                     break;
                 case "conditional":
                     console.log(conditionalHandler(statement, codeLine, codeArray));
@@ -97,6 +114,9 @@ function mainParser(codeArray){
                     console.log(variableHandler(statement, codeArray[codeLine]));
                     break;
                 case "list":
+                    break;
+                case "return":
+                    console.log(returnHandler(codeArray[codeLine].substring(6)));
                     break;
                 default:
                     //report error
