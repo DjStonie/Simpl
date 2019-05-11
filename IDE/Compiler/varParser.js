@@ -44,7 +44,7 @@ function varWriter(typeObj, expression){
 //line = line of simpl code with variable declaration
 //variables = all current variables
 //return = result of varWriter() or error
-function variableHandler(newVar, line){
+function variableHandler(newVar, line, indentLvl){
     //verify name
     const name = line.substring(newVar.vartype.length, newVar.operator);
     const verifiedName = verifyName(name);
@@ -52,7 +52,7 @@ function variableHandler(newVar, line){
         return verifiedName;
     };            
     if (lookUpVar(name, variables).type !== "error"){
-        return {"type": "error", "error": "var already created"};
+        return {"type": "error", "error": name + " already created"};
     };
     //verify expression
     const expression = line.substring(newVar.operator + 1, line.length);
@@ -62,9 +62,11 @@ function variableHandler(newVar, line){
     };
     //create new variable if no type error
     if (newVar.vartype === expressionType.type){
-        //newVar = {...newVar, "name": name};
-        //variables[0].push(newVar);
-        variables[0].push({"vartype": newVar.vartype, "name": name});
+        if (!(variables[indentLvl])){
+            //variables[indentLvl] = [];
+            variables.push([]);
+        }
+        variables[indentLvl].push({"vartype": newVar.vartype, "name": name});
         return varWriter({...newVar, "name": name}, expression);
     };
     return {"type": "error", "error": "Type error"}

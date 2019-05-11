@@ -1,5 +1,3 @@
-let functions = [];
-
 function functionWriter(newFunc, args, name){
     return newFunc.functiontype + " " + name + "(" + args + "){";
 };
@@ -18,10 +16,11 @@ function functionLookup(name){
             return functions[func];
         };
     };
-    return {"type": "error", "error": "function not found"};
+    return {"type": "error", "error": "function not found " + name};
 };
 
 function functionCallArgHandler(func, callStr){
+    callStr = callStr.substring(callStr.indexOf("(") + 1, callStr.indexOf(")"));
     let callList = [];
     if(callStr !== ""){
         callList = callStr.split(",");
@@ -29,13 +28,9 @@ function functionCallArgHandler(func, callStr){
     if (func.args.length !== callList.length){
         return {"type": "error", "error": "wrong number of arguments"};
     };
+        //console.log(func.args);
+        //console.log(callList);
     for (call in callList){
-        //lookup type of calllist[call]
-        //const lookedUp = lookUpVar(callList[call]);
-        //console.log("calllist[call]: " + callList[call]);
-        //if (lookedUp.error){
-          //  return lookedUp;
-        //};
         const exprType = expressionHandler(callList[call], func.args[call].vartype);
         if (exprType.error){
                 return exprType;
@@ -59,8 +54,7 @@ function functionCallHandler(name, callStr){
     if (func.error){
         return func;
     }
-    const argStr = callStr.substring(callStr.indexOf("(") + 1, callStr.indexOf(")"));
-    const args = functionCallArgHandler(func, argStr);
+    const args = functionCallArgHandler(func, callStr);
     if (args.error){
         return args;
     };
@@ -69,6 +63,7 @@ function functionCallHandler(name, callStr){
 
 function functionArgHandler(argStr){
     if (argStr.length > 0){
+        variables.push([]);
         const argList = argStr.split(",");
         let arguments = [];
         for (arg in argList){
@@ -84,7 +79,7 @@ function functionArgHandler(argStr){
                         if(isNameOk.error){
                             return isNameOk;
                         };
-                        variables[0].push({"vartype": varType, "name": varName});
+                        variables[variables.length - 1].push({"vartype": varType, "name": varName});
                         arguments.push({"vartype": varType, "name": varName});
                     }
                     else{
@@ -98,7 +93,7 @@ function functionArgHandler(argStr){
     return [];
 };
 
-function functionHandler(newFunc, line){
+function functionDeclarationHandler(newFunc, line){
     if(line.charAt(line.length - 1) === "{"){
         //const argStartIndex = line.indexOf("(");
         const argEndIndex = line.indexOf(")");
@@ -123,13 +118,10 @@ function functionHandler(newFunc, line){
     };
 };
 
-//hvordan kaldes funktioner?
-//look for return if not void
+//Handles return statements
 function returnHandler(returnStr){
-    //find out if waiting for return
     if (returnStr.length > 0){
         if (functions[functions.length - 1].functiontype !== "void"){
-            console.log(functions[functions.length - 1].functiontype);
             const exprType = expressionHandler(returnStr, functions[functions.length - 1].functiontype);
             if(exprType.error){
                 return exprType;
@@ -142,4 +134,11 @@ function returnHandler(returnStr){
         return {"type": "error", "error": "return type void cannot return"};
     };
     return {"type": "error", "error": "missing statement after return"};
+};
+
+function functionHandler(func, line){
+    if (func.functiontype === "call"){
+        return functionCallHandler(func, line);
+    }
+    return functionDeclarationHandler(func, line);
 };
