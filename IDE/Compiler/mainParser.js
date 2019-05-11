@@ -7,20 +7,19 @@ const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
 const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
 
 let variables = [[]]; //all current variables
+let functions = []; //all current funcitons
 
 //Chooses correct handler according to the expected type
 //expr = expression to be passed to correct handler
 //typeExpected = the expected type of expr
 //return =  result of specific handler or error if no handler could be found
 function expressionHandler(expr, typeExpected){
+    //console.log("expression handler: " + expr+ " "+ typeExpected);
     switch (typeExpected){
         case "int":
-            //return intExpressionHandler(expr);
             return verifyIntExpr(expr);
-            break;
         case "bool":
             return verifyBoolExpr(expr);
-            break;
     };
     return {"type": "error", "error": "internal - could not find handler for expression"};
 };
@@ -29,9 +28,11 @@ function expressionHandler(expr, typeExpected){
 //line = string with a simpl code line
 //return = json with information about type simpl code
 function lineIdentifier(line){
+    //test for end }
     if (line === "}"){
         return {"type": "end"};
     };
+    //search for all keywords in simplType
     for (rule in simplType){
         if (line.startsWith(simplType[rule].id)){
             if (simplType[rule].id === "void"){
@@ -44,7 +45,7 @@ function lineIdentifier(line){
             if(line.charAt(simplType[rule].id.length) === "["){
                 return {"type": "list", "listtype": simplType[rule].id, "operator": simplType[rule].id.length};
             };
-            //test for function or variable declaration
+            //test for function or variable declaration what comes first "=" or "("?
             for (let i = simplType[rule].id.length; i < line.length; i++){
                 if (line.charAt(i) === "("){
                     if (line.indexOf("{") > 0){
@@ -59,6 +60,7 @@ function lineIdentifier(line){
             return {"type": "error", "error": "Var or Func?"};
         };
     };
+    //for all keywords for condtionals
     for (rule in simplConditional){
         if (line.startsWith(simplConditional[rule].id + "(")){
             return {"type": "conditional", "contype": simplConditional[rule].id};
@@ -75,14 +77,14 @@ function lineIdentifier(line){
     };
     if (line.length > 0){
         return {"type": "error", "error": "Keyword not found"};
-    }
+    };
 };
 
 //controls parsing
 //codeArray = array with lines of simpl code trimmed by codeReader()
 //return = 
 function mainParser(codeArray){
-    //all current variables
+    //reset all current variables
     variables = [[]];
     let indentLvl = 0;
 
@@ -91,27 +93,23 @@ function mainParser(codeArray){
             const statement = lineIdentifier(codeArray[codeLine]);
             switch (statement.type){
                 case "error":
-                    console.log(statement.error);
+                    console.log({...statement, "line": parseInt(codeLine) + 1});
                     break;
                 case "end":
                     indentLvl -= 1;
-                    variables[0].pop();
+                    variables.pop();
                     console.log("};");
                     break;
                 case "function":
-                    if (statement.functiontype === "call"){
-                        console.log(functionCallHandler(statement, codeArray[codeLine]));
-                    }
-                    else {
-                        console.log(functionHandler(statement, codeArray[codeLine]));
-                    }
+                    console.log(functionHandler(statement, codeArray[codeLine]));
+                    indentLvl += 1;
                     break;
                 case "conditional":
                     console.log(conditionalHandler(statement, codeLine, codeArray));
                     indentLvl += 1;
                     break;
                 case "var":
-                    console.log(variableHandler(statement, codeArray[codeLine]));
+                    console.log(variableHandler(statement, codeArray[codeLine], indentLvl));
                     break;
                 case "list":
                     break;

@@ -17,7 +17,7 @@ function verifyBoolExpr(expression){
         const nextChar = exprList[expr].charAt(0);
         if (testChar(nextChar, boolOperators)){
             if (cantBeOperator){
-                return {"type": "error", "error": "unexpected operator", "char": nextChar};
+                return {"type": "error", "error": "unexpected operator" + nextChar, "char": nextChar};
             }
             else{
                 cantBeOperator = true;
@@ -49,18 +49,42 @@ function verifyBoolExpr(expression){
                     };
                 }
                 else{
-                    const varType = lookUpVar(exprList[expr]);
-                    if (varType.error){
-                        return varType;
-                    }
-                    else if (varType === "bool"){
-                        //cantBeOperator = false;
-                    }
-                    else if (varType === "int"){
-                        if (!findBoolOperator(expr, exprList)){
-                            return {"type": "error", "error": "missing bool operator"};
+                    funcOperator = exprList[expr].indexOf("(");
+                    if (funcOperator > 0){
+                        const func = functionLookup(exprList[expr].substring(0, funcOperator));
+                        if (func.error){
+                        return func;
+                        };
+                        if (func.functiontype === "bool"){
+                            const args = functionCallArgHandler(func, expression);
+                            if (args.error){
+                                return args;
+                            };
+                            funcEnd = expression.indexOf(")");
+                            if(expression.length > funcEnd + 1){
+                                console.log("bool new expression: " +  expression.substring(funcEnd + 1, expression.length));
+                                return verifyBoolExpr("true" + expression.substring(funcEnd + 1, expression.length));
+                            }
+                            return {"type": "bool"};
+                        };
+                        if (func.functiontype === "int"){
+                            return {"type": "error", "error": "type mismatch "+ func.name + " returns int bool required what"};
                         };
                     }
+                    else{
+                        const varType = lookUpVar(exprList[expr]);
+                        if (varType.error){
+                            return varType;
+                        }
+                        else if (varType === "bool"){
+                        //cantBeOperator = false;
+                        }
+                        else if (varType === "int"){
+                            if (!findBoolOperator(expr, exprList)){
+                                return {"type": "error", "error": "missing bool operator"};
+                            };
+                        };
+                    };
                 };            
             };
         };

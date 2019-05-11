@@ -10,7 +10,7 @@ function lookUpVar(name){
             };
         };
     };
-    return {"type": "error", "error": "could not find var"};
+    return {"type": "error", "error": "could not find var " + name};
 };
 
 //Splits on newline into array
