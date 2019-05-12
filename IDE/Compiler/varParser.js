@@ -29,6 +29,7 @@ function varWriter(typeObj, expression){
         case "char":
             break;
         case "string":
+            return  "char[] " + typeObj.name + " = " + expression + ";\n";
             break;
         case "bool":
             //not correct syntax! false and true not handled

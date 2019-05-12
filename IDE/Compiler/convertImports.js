@@ -21,14 +21,16 @@ function getConvertedCode() {
             }
         }
     };
-    var toSave = $("#code").val();
+    var code = $("#code").val();
+    var toProcessImports = "";
     if (imports.length!=0){
         //replace imports with the code for the import
         for (var k in imports){
-            if (toSave.includes("import "+k)){
-                toSave = toSave.replace("import "+k,imports[k])
+            if (code.includes("import "+k)){
+                code = code.replace("import "+k,"")
+                toProcessImports += imports[k];
             }
         };
     }
-    return toSave;
+    return [toProcessImports,code];
 };

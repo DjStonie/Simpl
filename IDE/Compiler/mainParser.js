@@ -3,7 +3,8 @@ const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"
 const numbers = ["0","1","2","3","4","5","6","7","8","9"];
 const intOperators = ["+","-","/","*"];
 const boolOperators = ["=",">","<","&","|"];
-const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
+const stringOperators = ["+"];
+const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}, {"id": "string"}];
 const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
 
 let variables = [[]]; //all current variables
@@ -20,6 +21,8 @@ function expressionHandler(expr, typeExpected){
             return verifyIntExpr(expr);
         case "bool":
             return verifyBoolExpr(expr);
+        case "string":
+            return verifyStringExpr(expr);   
     };
     return {"type": "error", "error": "internal - could not find handler for expression"};
 };
@@ -83,11 +86,44 @@ function lineIdentifier(line){
 //controls parsing
 //codeArray = array with lines of simpl code trimmed by codeReader()
 //return = 
-function mainParser(codeArray){
+function mainParser(imports,codeArray){
     //reset all current variables
     variables = [[]];
     let indentLvl = 0;
-
+    for (codeLine in imports){
+        if (imports[codeLine] !== ""){ //move to codereader?
+            const statement = lineIdentifier(imports[codeLine]);
+            switch (statement.type){
+                case "error":
+                    console.log({...statement, "line": parseInt(codeLine) + 1});
+                    break;
+                case "end":
+                    indentLvl -= 1;
+                    variables.pop();
+                    console.log("};");
+                    break;
+                case "function":
+                    console.log(functionHandler(statement, imports[codeLine]));
+                    indentLvl += 1;
+                    break;
+                case "conditional":
+                    console.log(conditionalHandler(statement, codeLine, imports));
+                    indentLvl += 1;
+                    break;
+                case "var":
+                    console.log(variableHandler(statement, imports[codeLine], indentLvl));
+                    break;
+                case "list":
+                    break;
+                case "return":
+                    console.log(returnHandler(imports[codeLine].substring(6)));
+                    break;
+                default:
+                    //report error
+                    break;
+            };
+        };
+    };
     for (codeLine in codeArray){
         if (codeArray[codeLine] !== ""){ //move to codereader?
             const statement = lineIdentifier(codeArray[codeLine]);
