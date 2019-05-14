@@ -32,7 +32,7 @@ function varHandler(varJson, codeLine){
         };  
         const expression = codeLine.substring(varJson.operator + 1);
         //console.log(expression);
-        console.log("varJson type: " + varJson.type);
+        //console.log("varJson type: " + varJson.type);
         const exprType = mainExpressionParser(expression, varJson.type);
         //console.log(exprType);
         if (exprType.error){
@@ -90,9 +90,10 @@ function lineController(codeLines){
     functions = [];
     let indentLvl = 0;
 
-    for (codeLine in codeLines){
+    for (let codeLine = 0; codeLine < codeLines.length; codeLine++){
         if (codeLines[codeLine] !== ""){
             const lineJson = mainLineIdentifier(codeLines[codeLine]);
+            //console.log("codeLineNbr1: " + codeLine);
             switch (lineJson.id){
                 case "end":
                     indentLvl -= 1;
@@ -120,6 +121,12 @@ function lineController(codeLines){
                     break;
                 case "return":
                     console.log(returnParser(codeLines[codeLine].substring(6)));
+                    break;
+                case "ccode":
+                    const ccode = cParser(codeLines, codeLine);
+                    codeLine = ccode[1];
+                    //console.log("codeLineNbr2: " + codeLine);
+                    console.log(ccode[0]);
                     break;
                 default:
                     console.log("no controller found");
@@ -153,6 +160,9 @@ function returnParser(returnStr){
 function mainLineIdentifier(codeLine){
     if (codeLine === "}"){
         return {"id": "end"};
+    };
+    if (codeLine === "c{"){
+        return {"id": "ccode"};
     };
     if (codeLine.startsWith("return")){
         return {"id": "return"};
