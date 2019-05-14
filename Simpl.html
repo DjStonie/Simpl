@@ -21,6 +21,7 @@
     <script src="IDE/Compiler/boolParser.js"></script>
     <script src="IDE/Compiler/conditionalParser.js"></script>
     <script src="IDE/Compiler/functionParser.js"></script>
+    <script src="IDE/Compiler/expressionParser.js"></script>
 </head>
 <body>  
 <div class="navbar">
@@ -164,7 +165,8 @@
                 //use return value of codeReader to give to parser
                 //system could save at this point
                 //Splitting on new line to maintain line numbers
-                mainParser(codeReader($("#code").val()));
+                //mainParser(codeReader($("#code").val()));
+                lineController(codeReader($("#code").val()));
             });
     });
 

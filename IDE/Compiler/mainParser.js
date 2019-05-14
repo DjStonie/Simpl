@@ -86,6 +86,7 @@ function lineIdentifier(line){
 function mainParser(codeArray){
     //reset all current variables
     variables = [[]];
+    functions = [];
     let indentLvl = 0;
 
     for (codeLine in codeArray){

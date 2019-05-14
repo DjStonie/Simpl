@@ -6,7 +6,8 @@ function lookUpVar(name){
     for (stack in variables){
         for (vars in variables[stack]){
             if (variables[stack][vars] && name === variables[stack][vars].name){
-                return variables[stack][vars].vartype;
+                //return variables[stack][vars].vartype;
+                return variables[stack][vars].type;
             };
         };
     };
