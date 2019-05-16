@@ -87,6 +87,7 @@ function lineIdentifier(line){
 //codeArray = array with lines of simpl code trimmed by codeReader()
 //return = 
 function mainParser(imports,codeArray){
+    let writer = "//Imported code\n\n";
     //reset all current variables
     variables = [[]];
     let indentLvl = 0;
@@ -111,7 +112,11 @@ function mainParser(imports,codeArray){
                     indentLvl += 1;
                     break;
                 case "var":
-                    console.log(variableHandler(statement, imports[codeLine], indentLvl));
+                    var varHandler = variableHandler(statement, imports[codeLine], indentLvl)
+                    console.log(varHandler)
+                    if (varHandler.type === "error"){
+                        console.log("Sket en fejl")
+                    }
                     break;
                 case "list":
                     break;
@@ -124,6 +129,7 @@ function mainParser(imports,codeArray){
             };
         };
     };
+    writer += "\n//Your code\n\n";
     for (codeLine in codeArray){
         if (codeArray[codeLine] !== ""){ //move to codereader?
             const statement = lineIdentifier(codeArray[codeLine]);
@@ -134,23 +140,62 @@ function mainParser(imports,codeArray){
                 case "end":
                     indentLvl -= 1;
                     variables.pop();
-                    console.log("};");
+                    for (var i = 0;i < indentLvl;i++){
+                        writer += "    ";
+                    }
+                    writer += "};\n";
                     break;
                 case "function":
-                    console.log(functionHandler(statement, codeArray[codeLine]));
+                    var handler = functionHandler(statement, codeArray[codeLine])
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler+"\n";
+                    }
                     indentLvl += 1;
                     break;
                 case "conditional":
-                    console.log(conditionalHandler(statement, codeLine, codeArray));
+                    var handler = conditionalHandler(statement, codeLine, codeArray)
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler;
+                    }
                     indentLvl += 1;
                     break;
                 case "var":
-                    console.log(variableHandler(statement, codeArray[codeLine], indentLvl));
+                    var handler = variableHandler(statement, codeArray[codeLine], indentLvl)
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler;
+                    }
                     break;
                 case "list":
                     break;
                 case "return":
-                    console.log(returnHandler(codeArray[codeLine].substring(6)));
+                    var handler = returnHandler(codeArray[codeLine].substring(6))
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler+"\n";
+                    }
                     break;
                 default:
                     //report error
@@ -161,4 +206,6 @@ function mainParser(imports,codeArray){
     if(indentLvl !== 0){
         return {"type": "error", "error": "indent error"};
     };
+    var blob = new Blob([writer], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "CompiledCode.C");
 };
