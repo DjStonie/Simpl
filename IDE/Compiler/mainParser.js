@@ -204,7 +204,8 @@ function mainParser(imports,codeArray){
         };
     };
     if(indentLvl !== 0){
-        return {"type": "error", "error": "indent error"};
+        var textArea2 = document.getElementById("console");
+        textArea2.value = textArea2.value+"You made a mistake on indents\n"
     };
     var blob = new Blob([writer], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "CompiledCode.C");
