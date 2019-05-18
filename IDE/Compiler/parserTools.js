@@ -58,6 +58,25 @@ function splitOnOperator(str, operatorList){
     return returnList;
 };
 
+function testKeyword(nameStr){
+    for (simpl in simplType){
+        if (nameStr === simplType[simpl].id){
+            return {"id": "error", "type": "error", "error": "Name matches simpl reserved word - simpl type"};
+        };
+    };
+    for (simpl in simplConditional){
+        if (nameStr === simplConditional[simpl].id){
+            return {"id": "error", "type": "error", "error": "Name matches simpl reserved word - simpl conditional"};
+        };
+    };
+    for (cKeyword in cReservedWords){
+        if (nameStr === cReservedWords[cKeyword]){
+            return {"id": "error", "type": "error", "error": "Name matches c reserved word"};
+        };
+    };
+    return {"keyword": "ok"};
+};
+
 //
 function testStr(str, set){
     for (char in str){

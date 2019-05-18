@@ -33,6 +33,8 @@ function varHandler(varJson, codeLine){
             return exprType;
         };
         if (varJson.type === exprType.type){
+            console.log(codeLine);
+            console.log(variables);
             variables[variables.length - 1].push({"type": varJson.type, "name": name});
             return varWriter({...varJson, "name": name}, expression);
         };
@@ -222,7 +224,7 @@ function functionCallParser(func, codeLineList, codeLineIndex){
         if(funcCallArgsEnd === ")"){
             const args = functionCallArgParser(func, arguments + codeLineList[i].substring(0, codeLineList[i].length - 1));
             if (args.args){
-                return {...func, "newindex": i + 1};
+                return {...func, "newindex": i};
             };
             return args;
         };
@@ -284,7 +286,7 @@ function intExpressionParser(expression){
                 const functionCall = functionCallParser(exprType, exprList, expr);
                 if(functionCall.type === "int"){
                     operatorSwitch = true;
-                    expr = functionCall.newindex -1;
+                    expr = functionCall.newindex;
                 }
                 else{
                     return functionCall;

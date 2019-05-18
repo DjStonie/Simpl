@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="main.js"></script>
+</head>
+<body>
+    
+    <div id="handbook">
+        <div id="vars">
+            <h1>
+                Variables
+            </h1>
+                Declare variables of different types and store for later use. Must be correct type.
+            <p>
+                <b>Syntax:</b> [TYPE] [NAME] = [EXPRESSION]
+            </p>
+            <p>
+                <b>Example:</b> int variableName = 2 + 3
+            </p>
+        </div>
+        <div id="funcs">
+            <h1>
+                Functions
+            </h1>
+                Declare functions of different return types and store for later use. Must be correct type. Use comma to separate arguments.
+            <p>
+                <b>Syntax:</b> [TYPE] [NAME] ([TYPE] [NAME]){ <br>
+                    [EXPRESSION]; <br>
+                    }
+            </p>
+            <p>
+                <b>Example:</b> int sum(int arg1,int arg2){<br>             
+                return arg1 + arg2<br>
+                }
+            </p>
+        </div>
+        <div id="conds">
+            <h1>
+                Conditionals
+            </h1>
+                Create conditions to decide if code should run.
+                <!--
+            <p>
+                <b>Syntax:</b> [TYPE] [NAME] ([TYPE] [NAME]){ <br>
+                    [EXPRESSION]; <br>
+                    }
+            </p>
+            <p>
+                <b>Example:</b> int sum(int arg1,int arg2){<br>             
+                return arg1 + arg2<br>
+                }
+                </p>-->
+            <div id="condstypes">
+                <div id="if">
+                        <h1>
+                            If
+                        </h1>
+                            Declare a condition and run code if that condtion is true.
+                        <p>
+                            <b>Syntax:</b> if ([BOOL EXPRESSION]){<br>
+                            [CODE]<br>
+                            }
+                        </p>
+                        <p>
+                            <b>Example:</b> if (3 > 2){<br>
+                            int intName = 2<br>
+                            }
+                        </p>
+                    </div>
+                <div id="while">
+                    <h1>
+                        While
+                    </h1>
+                        Declare a condition and run code until that condtion is false.
+                    <p>
+                    <b>Syntax:</b> while ([BOOL EXPRESSION]){ <br>
+                            [CODE]; <br>
+                            }
+                    </p>
+                    <p>
+                        <b>Example:</b> while(true){<br>             
+                        intName = intName + 1<br>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="types">
+            <div id="int">
+                    <h1>
+                            Int
+                        </h1>
+                            An integer
+                        <p>
+                        <b>Syntax:</b> while ([BOOL EXPRESSION]){ <br>
+                                [CODE]; <br>
+                                }
+                        </p>
+                        <p>
+                            <b>Example:</b> while(true){<br>             
+                            intName = intName + 1<br>
+                            }
+                        </p>
+            </div>
+            <div id="bool">
+                    <h1>
+                            Bool
+                        </h1>
+                            A boolean value
+                        <p>
+                        <b>Syntax:</b> while ([BOOL EXPRESSION]){ <br>
+                                [CODE]; <br>
+                                }
+                        </p>
+                        <p>
+                            <b>Example1:</b> true
+                        </p>
+                        <p>
+                                <b>Example2:</b> false
+                            </p>
+
+            </div>
+            <div id="void">
+                    <h1>
+                            Void
+                        </h1>
+                            When a function does not return another [TYPE] it returns void. Functions returning void do not have a return statement.
+                        <p>
+                                <b>Example:</b> void sum(int arg1,int arg2){<br>             
+                                    return arg1 + arg2<br>
+                                    }
+                        </p>
+
+            </div>
+        </div>
+        <div id="Name">
+            <h1>
+                [NAME]
+            </h1>
+            <p>
+            <b>Syntax:</b> Must start with letter otherwise use letters and numbers.
+        </p>
+        <p>
+            <b>Legal letters: </b>["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]<br>
+            <b>Legal numbers: </b>["0","1","2","3","4","5","6","7","8","9"]
+        </p>
+        </div>
+        <div id="expression">
+                <h1>
+                    [EXPRESSION]
+                </h1>
+                <p>
+                <b>Syntax:</b> An expression ending in a type.
+            </p>
+            <p>
+                <b>Examples:</b> [BOOL EXPRESSION] 2 > 2 <br> [INT EXPRESSION] 2 - 1
+            </p>
+            </div>
+    </div>
+    <script>
+        //types
+/*
+const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+const intOperators = ["+","-","/","*"];
+const boolOperators = ["=",">","<","&","|"];
+const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
+const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
+*/
+//Types
+const int = {"type": "int", "operators": intOperators};
+const bool = {"type": "bool", "operators": boolOperators};
+const voids = {"type": "void", "operators": "none"};
+//Conditionals
+const ifCond = {"type": "if", }
+
+//names
+const names = {""}
+
+
+//variables
+
+
+//Functions
+const functions = {
+    "Type": "function",
+    "namingrules": "Name must start with letter",
+    "namingchars": [{"name": "letters", "list": letters}, {"name": "numbers", "list": numbers}],
+    "description": "Specify return type then name enclose arguments with () specifying their type and number",
+    "example": "[TYPE] [NAME] ([TYPE] [NAME])"
+};
+    </script>
+</body>
+</html>

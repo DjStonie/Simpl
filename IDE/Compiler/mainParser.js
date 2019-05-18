@@ -4,7 +4,9 @@ const numbers = ["0","1","2","3","4","5","6","7","8","9"];
 const intOperators = ["+","-","/","*"];
 const boolOperators = ["=",">","<","&","|"];
 const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
-const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
+const simplConditional = [{"id": "while"}, {"id": "if"}];
+const cReservedWords = ["auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned",
+"const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double"];
 
 let variables = [[]]; //all current variables
 let functions = []; //all current funcitons

@@ -9,6 +9,10 @@ function verifyName(nameStr){
                     return {"type": "error", "error": "name error wrong char"};
                 };
             };
+            const keywordTest = testKeyword(nameStr);
+            if (keywordTest.error){
+                return keywordTest;
+            };
             return {"type": "ok"};
         };
         return {"type": "error", "error": "naming error, var cannot start with number"};
