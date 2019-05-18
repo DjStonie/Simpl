@@ -9,6 +9,10 @@ function verifyName(nameStr){
                     return {"type": "error", "error": "name error wrong char"};
                 };
             };
+            const keywordTest = testKeyword(nameStr);
+            if (keywordTest.error){
+                return keywordTest;
+            };
             return {"type": "ok"};
         };
         return {"type": "error", "error": "naming error, var cannot start with number"};
@@ -21,9 +25,10 @@ function verifyName(nameStr){
 //expression = expression part of variable declaration
 //return = string with c variable declaration
 function varWriter(typeObj, expression){
-    switch(typeObj.vartype){
-        case "int":
-            const newLine = typeObj.vartype + " " + typeObj.name + " = " + expression + ";\n";
+    //switch(typeObj.vartype){
+    switch(typeObj.type){
+        case "int"://her vartype/type
+            const newLine = typeObj.type + " " + typeObj.name + " = " + expression + ";\n";
             return newLine;
             break;             
         case "char":
@@ -33,7 +38,8 @@ function varWriter(typeObj, expression){
             break;
         case "bool":
             //not correct syntax! false and true not handled
-            return  typeObj.vartype + " " + typeObj.name + " = " + expression + ";\n";
+            //her
+            return  typeObj.type + " " + typeObj.name + " = " + expression + ";\n";
             break;
         };
 
@@ -52,7 +58,7 @@ function variableHandler(newVar, line, indentLvl){
     if (verifiedName.type === "error"){
         return verifiedName;
     };            
-    if (lookUpVar(name, variables).type !== "error"){
+    if (lookUpVar(name).type !== "error"){
         return {"type": "error", "error": name + " already created"};
     };
     //verify expression

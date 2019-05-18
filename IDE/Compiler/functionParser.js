@@ -1,5 +1,5 @@
 function functionWriter(newFunc, args, name){
-    return newFunc.functiontype + " " + name + "(" + args + "){";
+    return newFunc.type + " " + name + "(" + args + "){";
 };
 
 function functionCallWriter(str){
@@ -53,7 +53,7 @@ function functionCallHandler(name, callStr){
     const func = functionLookup(name.name);
     if (func.error){
         return func;
-    }
+    };
     const args = functionCallArgHandler(func, callStr);
     if (args.error){
         return args;
@@ -62,8 +62,9 @@ function functionCallHandler(name, callStr){
 };
 
 function functionArgHandler(argStr){
+    //console.log(argStr);
     if (argStr.length > 0){
-        variables.push([]);
+        //variables.push([]); //her??
         const argList = argStr.split(",");
         let arguments = [];
         for (arg in argList){
@@ -79,8 +80,8 @@ function functionArgHandler(argStr){
                         if(isNameOk.error){
                             return isNameOk;
                         };
-                        variables[variables.length - 1].push({"vartype": varType, "name": varName});
-                        arguments.push({"vartype": varType, "name": varName});
+                        variables[variables.length - 1].push({"type": varType, "name": varName});
+                        arguments.push({"type": varType, "name": varName});
                     }
                     else{
                         return {"type": "error", "error": "arg - variable with same name already declared"};
@@ -94,13 +95,16 @@ function functionArgHandler(argStr){
 };
 
 function functionDeclarationHandler(newFunc, line){
+    //console.log(newFunc);
+    //console.log(line);
     if(line.charAt(line.length - 1) === "{"){
         //const argStartIndex = line.indexOf("(");
         const argEndIndex = line.indexOf(")");
         if (argEndIndex < 0){
             return {"type": "error", "error": "function syntax - missing )"};
         };
-        const name = line.substring(newFunc.functiontype.length, newFunc.operator);
+        //const name = line.substring(newFunc.functiontype.length, newFunc.operator);
+        const name = line.substring(newFunc.type.length, newFunc.operator);
         const verifiedName = verifyName(name);
         if (verifiedName.error){
             return verifiedName;
