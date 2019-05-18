@@ -33,8 +33,6 @@ function varHandler(varJson, codeLine){
             return exprType;
         };
         if (varJson.type === exprType.type){
-            console.log(codeLine);
-            console.log(variables);
             variables[variables.length - 1].push({"type": varJson.type, "name": name});
             return varWriter({...varJson, "name": name}, expression);
         };
@@ -70,56 +68,81 @@ function functionCallParser(func, codeLine){
     return functionCallWriter(codeLine);
 };
 
-function lineController(codeLines){
+function mainController(code){
+    //console.log(code);
     //reset all current variables
     variables = [[]];
     functions = [];
+
+    for (codeLines in code){
+        const parsedCode = lineController(code[codeLines]);
+        //console.log(code[codeLines]);
+        if (parsedCode.error){
+            reportError(parsedCode);
+            break;
+        };
+    };
+
+};
+
+function lineController(codeLines){
     let indentLvl = 0;
+    let writer = "";
 
     for (let codeLine = 0; codeLine < codeLines.length; codeLine++){
         if (codeLines[codeLine] !== ""){
             const lineJson = mainLineIdentifier(codeLines[codeLine]);
+            let handler;
             switch (lineJson.id){
                 case "end":
                     indentLvl -= 1;
                     variables.pop();
-                    console.log("};");
+                    handler = "};";
                     break;
                 case "error":
-                    console.log(lineJson);
+                    handler = {...lineJson, "line": codeLine}; //reportError(codeLine, lineJson);
                     break;
                 case "var":
-                    console.log(varHandler(lineJson, codeLines[codeLine]));
+                    handler = varHandler(lineJson, codeLines[codeLine]);
+                    //console.log(varHandler(lineJson, codeLines[codeLine]));
                     break;
                 case "function":
+                    variables.push([]);
+                    handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
                     indentLvl += 1;
-                    variables.push([])
-                    console.log(functionDeclarationHandler(lineJson, codeLines[codeLine]));
                     break;
                 case "conditional":
                     indentLvl += 1;
-                    variables.push([])
-                    console.log(conditionalParser(lineJson, codeLines[codeLine]));
+                    variables.push([]);
+                    handler = conditionalParser(lineJson, codeLines[codeLine]);
                     break;
                 case "call":
-                    console.log(functionCallParser(lineJson, codeLines[codeLine]));
+                    handler = functionCallParser(lineJson, codeLines[codeLine]);
                     break;
                 case "return":
-                    console.log(returnParser(codeLines[codeLine].substring(6)));
+                    handler = returnParser(codeLines[codeLine].substring(6));
                     break;
                 case "ccode":
                     const ccode = cParser(codeLines, codeLine);
                     codeLine = ccode[1];
+                    console.log("husk!");
                     console.log(ccode[0]);
                     break;
                 default:
-                    console.log("no controller found");
+                    return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
             };
+            if (handler.error){
+                //reportError(i, handler);
+                return {...handler, "line": codeLine}
+            };
+            writer += createIndent(indentLvl) +  handler + "\n";
         };
     };
     if (indentLvl !== 0){
         return {"id": "error", "type": "error", "error": "missing }"};
     };
+    fileWriter("CompiledCode.C", writer);
+    return "ok";
 };
 
 //Handles return statements
@@ -254,15 +277,27 @@ function expressionParser(expression){
             return {...func, "id": "call", "operator": funcArgIndex};
         };
         if (expression === "true" || expression === "false"){
-            return {type: "bool"};
+            return {"type": "bool"};
         };
         const variable = lookUpVar(expression);
         if (variable.error){
             return variable;
         };
         return {"type": variable};
+    }
+    else if (sampleChar === "\""){
+        if (expression.charAt(expression.length - 1) !== "\""){
+            return {"id": "error", "type": "error", "error": "string must end in \""};
+        };
+        for (let i = 1; i < expression.length - 1; i++){
+            const nextChar = expression.charAt(i);
+            if (!(testChar(nextChar, letters) || testChar(nextChar, numbers))){
+                return {"id": "error", "type": "error", "error": "unexpected char expected letter or number got " + nextChar};
+            };
+        };
+        return {"type": "string"};
     };
-    return {"id": "error", "type": "error", "error": "unexpected char " + sampleChar};
+    return {"id": "error", "type": "error", "error": "unexpected char unknown char " + sampleChar};
 };
 //ingen minus variable
 
@@ -355,7 +390,9 @@ function mainExpressionParser(expression, expectedType){
             return intExpressionParser(expression);
         case "bool":
             return boolExpressionParser(expression);
+        case "string":
+            return stringExpressionParser(expression);
         default:
-            return {"type": "error", "error": "unexpected type " + expectedType};
+            return {"id": "error", "type": "error", "error": "unexpected type " + expectedType};
     };
 };
