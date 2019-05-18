@@ -7,6 +7,8 @@ const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
 const simplConditional = [{"id": "while"}, {"id": "if"}];
 const cReservedWords = ["auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned",
 "const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double"];
+const stringOperators = ["+"];
+const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}, {"id": "string"}];
 
 let variables = [[]]; //all current variables
 let functions = []; //all current funcitons
@@ -22,6 +24,8 @@ function expressionHandler(expr, typeExpected){
             return verifyIntExpr(expr);
         case "bool":
             return verifyBoolExpr(expr);
+        case "string":
+            return verifyStringExpr(expr);   
     };
     return {"type": "error", "error": "internal - could not find handler for expression"};
 };
@@ -85,15 +89,15 @@ function lineIdentifier(line){
 //controls parsing
 //codeArray = array with lines of simpl code trimmed by codeReader()
 //return = 
-function mainParser(codeArray){
+function mainParser(imports,codeArray){
+    let writer = "//Imported code\n\n";
     //reset all current variables
     variables = [[]];
     functions = [];
     let indentLvl = 0;
-
-    for (codeLine in codeArray){
-        if (codeArray[codeLine] !== ""){ //move to codereader?
-            const statement = lineIdentifier(codeArray[codeLine]);
+    for (codeLine in imports){
+        if (imports[codeLine] !== ""){ //move to codereader?
+            const statement = lineIdentifier(imports[codeLine]);
             switch (statement.type){
                 case "error":
                     console.log({...statement, "line": parseInt(codeLine) + 1});
@@ -104,20 +108,98 @@ function mainParser(codeArray){
                     console.log("};");
                     break;
                 case "function":
-                    console.log(functionHandler(statement, codeArray[codeLine]));
+                    console.log(functionHandler(statement, imports[codeLine]));
                     indentLvl += 1;
                     break;
                 case "conditional":
-                    console.log(conditionalHandler(statement, codeLine, codeArray));
+                    console.log(conditionalHandler(statement, codeLine, imports));
                     indentLvl += 1;
                     break;
                 case "var":
-                    console.log(variableHandler(statement, codeArray[codeLine], indentLvl));
+                    var varHandler = variableHandler(statement, imports[codeLine], indentLvl)
+                    console.log(varHandler)
+                    if (varHandler.type === "error"){
+                        console.log("Sket en fejl")
+                    }
                     break;
                 case "list":
                     break;
                 case "return":
-                    console.log(returnHandler(codeArray[codeLine].substring(6)));
+                    console.log(returnHandler(imports[codeLine].substring(6)));
+                    break;
+                default:
+                    //report error
+                    break;
+            };
+        };
+    };
+    writer += "\n//Your code\n\n";
+    for (codeLine in codeArray){
+        if (codeArray[codeLine] !== ""){ //move to codereader?
+            const statement = lineIdentifier(codeArray[codeLine]);
+            switch (statement.type){
+                case "error":
+                    console.log({...statement, "line": parseInt(codeLine) + 1});
+                    break;
+                case "end":
+                    indentLvl -= 1;
+                    variables.pop();
+                    for (var i = 0;i < indentLvl;i++){
+                        writer += "    ";
+                    }
+                    writer += "};\n";
+                    break;
+                case "function":
+                    var handler = functionHandler(statement, codeArray[codeLine])
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler+"\n";
+                    }
+                    indentLvl += 1;
+                    break;
+                case "conditional":
+                    var handler = conditionalHandler(statement, codeLine, codeArray)
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler;
+                    }
+                    indentLvl += 1;
+                    break;
+                case "var":
+                    var handler = variableHandler(statement, codeArray[codeLine], indentLvl)
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler;
+                    }
+                    break;
+                case "list":
+                    break;
+                case "return":
+                    var handler = returnHandler(codeArray[codeLine].substring(6))
+                    if (handler.type == "error"){
+                        var textArea2 = document.getElementById("console");
+                        textArea2.value = textArea2.value+"You made a mistake on line "+(parseInt(codeLine)+1)+": "+handler.error+"\n"
+                    }else{
+                        for (var i = 0;i < indentLvl;i++){
+                            writer += "    ";
+                        }
+                        writer += handler+"\n";
+                    }
                     break;
                 default:
                     //report error
@@ -126,6 +208,9 @@ function mainParser(codeArray){
         };
     };
     if(indentLvl !== 0){
-        return {"type": "error", "error": "indent error"};
+        var textArea2 = document.getElementById("console");
+        textArea2.value = textArea2.value+"You made a mistake on indents\n"
     };
+    var blob = new Blob([writer], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "CompiledCode.C");
 };

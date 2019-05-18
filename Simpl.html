@@ -14,6 +14,8 @@
     <script src="IDE/JS/newFile.js"></script>
     <script src="IDE/JS/saveFile.js"></script>
     <script src="IDE/JS/loadFile.js"></script>
+    <script src="IDE/Compiler/stringParser.js"></script>
+    <script src="IDE/Compiler/convertImports.js"></script>
     <script src="IDE/Compiler/parserTools.js"></script>
     <script src="IDE/Compiler/mainParser.js"></script>
     <script src="IDE/Compiler/varParser.js"></script>
@@ -167,7 +169,10 @@
                 //system could save at this point
                 //Splitting on new line to maintain line numbers
                 //mainParser(codeReader($("#code").val()));
-                lineController(codeReader($("#code").val()));
+              //!!!!
+                //lineController(codeReader($("#code").val()));
+                const parsedCode = codeReader();
+                mainParser(parsedCode[0],parsedCode[1]);
             });
     });
 
