@@ -38,7 +38,7 @@ function stringExpressionParser(expression){
     if (!cantBeOperator){
         return {"type": "string"};
     };
-    return {"id": "error", "type": "error", "error": "missing expression"};
+    return {"id": "error", "type": "error", "error": "missing string expression"};
 };
 /*
 function verifyStringExpr(expression){

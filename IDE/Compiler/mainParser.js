@@ -13,7 +13,7 @@ let variables = [[]]; //all current variables
 let functions = []; //all current funcitons
 
 function mainController(code){
-    //reset all current variables
+    //reset all current variables and functions
     variables = [[]];
     functions = [];
 
@@ -41,11 +41,10 @@ function lineController(codeLines){
                     handler = "};";
                     break;
                 case "error":
-                    handler = {...lineJson, "line": codeLine}; //reportError(codeLine, lineJson);
+                    handler = {...lineJson, "line": codeLine};
                     break;
                 case "var":
                     handler = varHandler(lineJson, codeLines[codeLine]);
-                    //console.log(varHandler(lineJson, codeLines[codeLine]));
                     break;
                 case "function":
                     variables.push([]);

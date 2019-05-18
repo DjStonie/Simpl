@@ -27,20 +27,13 @@ function verifyName(nameStr){
 function varWriter(typeObj, expression){
     switch(typeObj.type){
         case "int":
-            const newLine = typeObj.type + " " + typeObj.name + " = " + expression;
-            return newLine;
-            break;             
-        case "char":
-            break;
+            return typeObj.type + " " + typeObj.name + " = " + expression + ";";
         case "string":
-            return  "char[] " + typeObj.name + " = " + expression;
-            break;
+            return  "char[] " + typeObj.name + " = " + expression + ";";
         case "bool":
             //not correct syntax! false and true not handled
-            return  typeObj.type + " " + typeObj.name + " = " + expression;
-            break;
+            return  typeObj.type + " " + typeObj.name + " = " + expression + ";"
         };
-
     return {"type": "error", "error": "internal varWriter - no match"}
 };
 
