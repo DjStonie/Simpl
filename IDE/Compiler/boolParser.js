@@ -5,6 +5,46 @@ function findBoolOperator(expr, exprList){
     return followingIndexIsAnOp || leadingIndexIsAnOp;
 };
 
+function boolExpressionParser(expression){
+    const exprList = splitOnOperator(expression, boolOperators);
+    let operatorSwitch = false;
+    if(exprList.length === 1){
+        return expressionParser(expression);
+    }
+    for (let expr = 0; expr < exprList.length; expr++){
+        if (operatorSwitch){
+            if (!(testChar(exprList[expr], boolOperators))){
+                return {"type": "error", "error": "operator expected found " + exprList[expr]};
+            };
+            operatorSwitch = false;
+        }
+        else{
+            const exprType = expressionParser(exprList[expr]);
+
+            if(exprType.id === "call"){
+                const functionCall = functionCallParser(exprType, exprList, expr);
+                if(functionCall.type === "bool" || functionCall.type === "int"){
+                    operatorSwitch = true;
+                    expr = functionCall.newindex;
+                }
+                else{
+                    return functionCall;
+                };     
+            }
+            else if (exprType.type === "int" || exprType.type === "bool"){
+                operatorSwitch = true;
+            } 
+            else{
+                return exprType;
+            };
+        };
+    };
+    if (operatorSwitch){
+        return {"type": "bool"};
+    }
+    return {"id": "error", "type": "error", "error": "missing expression"};
+};
+/*
 function verifyBoolExpr(expression){
     const exprList = splitOnOperator(expression, boolOperators);
     let cantBeOperator = true;
@@ -90,4 +130,4 @@ function verifyBoolExpr(expression){
         };
     };
     return {"type": "bool"};
-};
+};*/

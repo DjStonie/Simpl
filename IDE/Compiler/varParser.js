@@ -25,27 +25,68 @@ function verifyName(nameStr){
 //expression = expression part of variable declaration
 //return = string with c variable declaration
 function varWriter(typeObj, expression){
-    //switch(typeObj.vartype){
     switch(typeObj.type){
-        case "int"://her vartype/type
-            const newLine = typeObj.type + " " + typeObj.name + " = " + expression + ";\n";
+        case "int":
+            const newLine = typeObj.type + " " + typeObj.name + " = " + expression;
             return newLine;
             break;             
         case "char":
             break;
         case "string":
-            return  "char[] " + typeObj.name + " = " + expression + ";\n";
+            return  "char[] " + typeObj.name + " = " + expression;
             break;
         case "bool":
             //not correct syntax! false and true not handled
-            //her
-            return  typeObj.type + " " + typeObj.name + " = " + expression + ";\n";
+            return  typeObj.type + " " + typeObj.name + " = " + expression;
             break;
         };
 
     return {"type": "error", "error": "internal varWriter - no match"}
 };
 
+function varHandler(varJson, codeLine){
+    if (varJson.operator){
+        const name = codeLine.substring(varJson.type.length, varJson.operator);
+        if (lookUpVar(name).type !== "error"){  
+            return {"type": "error", "error": name + " already created"};
+        };
+        const verifiedName = verifyName(name);
+        if (verifiedName.type === "error"){
+            return verifiedName;
+        };  
+        const expression = codeLine.substring(varJson.operator + 1);
+        const exprType = mainExpressionParser(expression, varJson.type);
+        if (exprType.error){
+            return exprType;
+        };
+        if (varJson.type === exprType.type){
+            variables[variables.length - 1].push({"type": varJson.type, "name": name});
+            return varWriter({...varJson, "name": name}, expression);
+        };
+        return {"id": "error", "type": "error", "error": "type mismatch expected " + varJson.type + " found " + exprType.type};
+    }
+    else{
+        const operator = codeLine.indexOf("=");
+        if (operator > 0){
+            const name = codeLine.substring(0, operator);
+            const verifiedVar = lookUpVar(name);
+            if (verifiedVar.error){
+                return verifiedVar;
+            };
+            const expression = codeLine.substring(operator + 1);
+            const exprType = mainExpressionParser(expression, varJson.type);
+            if (exprType.type === "error"){
+                return exprType;
+            };
+            if (verifiedVar === exprType.type){
+                return varWriter({...varJson, "name": name}, expression);
+            };
+            return {"id": "error", "type": "error", "error": "type mismatch  expected " + verifiedVar + " found " + exprType.type};
+        };
+        return {"id": "error", "type": "error", "error": "missing operator ="};
+    };
+};
+/*
 //verifies variables and pushes them onto stack
 //newVar = json with information about a new variable
 //line = line of simpl code with variable declaration
@@ -77,4 +118,4 @@ function variableHandler(newVar, line, indentLvl){
         return varWriter({...newVar, "name": name}, expression);
     };
     return {"type": "error", "error": "Type error"}
-};
+};*/

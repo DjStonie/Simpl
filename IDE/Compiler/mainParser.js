@@ -12,6 +12,121 @@ const cReservedWords = ["auto","else","long","switch","break","enum","register",
 let variables = [[]]; //all current variables
 let functions = []; //all current funcitons
 
+function mainController(code){
+    //reset all current variables
+    variables = [[]];
+    functions = [];
+
+    for (codeLines in code){
+        const parsedCode = lineController(code[codeLines]);
+        if (parsedCode.error){
+            reportError(parsedCode);
+            break;
+        };
+    };
+};
+
+function lineController(codeLines){
+    let indentLvl = 0;
+    let writer = "";
+
+    for (let codeLine = 0; codeLine < codeLines.length; codeLine++){
+        if (codeLines[codeLine] !== ""){
+            const lineJson = mainLineIdentifier(codeLines[codeLine]);
+            let handler;
+            switch (lineJson.id){
+                case "end":
+                    indentLvl -= 1;
+                    variables.pop();
+                    handler = "};";
+                    break;
+                case "error":
+                    handler = {...lineJson, "line": codeLine}; //reportError(codeLine, lineJson);
+                    break;
+                case "var":
+                    handler = varHandler(lineJson, codeLines[codeLine]);
+                    //console.log(varHandler(lineJson, codeLines[codeLine]));
+                    break;
+                case "function":
+                    variables.push([]);
+                    handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
+                    indentLvl += 1;
+                    break;
+                case "conditional":
+                    indentLvl += 1;
+                    variables.push([]);
+                    handler = conditionalParser(lineJson, codeLines[codeLine]);
+                    break;
+                case "call":
+                    handler = functionCallParser(lineJson, codeLines[codeLine]);
+                    break;
+                case "return":
+                    handler = returnParser(codeLines[codeLine].substring(6));
+                    break;
+                case "ccode":
+                    const ccode = cParser(codeLines, codeLine);
+                    codeLine = ccode[1];
+                    console.log("husk!");
+                    console.log(ccode[0]);
+                    break;
+                default:
+                    return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
+            };
+            if (handler.error){
+                return {...handler, "line": codeLine}
+            };
+            writer += createIndent(indentLvl) +  handler + "\n";
+        };
+    };
+    if (indentLvl !== 0){
+        return {"id": "error", "type": "error", "error": "missing }"};
+    };
+    fileWriter("CompiledCode.C", writer);
+    return "ok";
+};
+
+function mainLineIdentifier(codeLine){
+    if (codeLine === "}"){
+        return {"id": "end"};
+    };
+    if (codeLine === "c{"){
+        return {"id": "ccode"};
+    };
+    if (codeLine.startsWith("return")){
+        return {"id": "return"};
+    };
+    for (simpl in simplType){
+        if (codeLine.startsWith(simplType[simpl].id)){
+            const exprVarIndex = codeLine.indexOf("=");
+            const exprFunctionIndex = codeLine.indexOf("(");
+            if (exprVarIndex > 0 && (exprVarIndex < exprFunctionIndex || exprFunctionIndex < 0)){
+                return {"id": "var", "type": simplType[simpl].id, "operator": exprVarIndex};
+            }else if (exprFunctionIndex > 0 && (exprFunctionIndex < exprVarIndex || exprVarIndex < 0)){
+                return {"id": "function", "type": simplType[simpl].id, "operator": exprFunctionIndex};
+            };
+            return {"id": "error", "type": "error", "error": "var or func?"};
+        };
+    };
+    for (simpl in simplConditional){
+        if (codeLine.startsWith(simplConditional[simpl].id + "(")){
+            return {"id": "conditional", "type": "conditional", "contype": simplConditional[simpl].id};
+        };
+    };
+    for (stack in variables){
+        for (vars in variables[stack]){
+            if(codeLine.startsWith(variables[stack][vars].name)){
+                return {...variables[stack][vars], "id": "var"};
+            };
+        };
+    };
+    for (func in functions){
+        if(codeLine.startsWith(functions[func].name)){
+            return {...functions[func], "id": "call", "operator": exprIndex};
+        };
+    };
+    return {"id": "error", "type": "error", "error": "keyword not found"};
+};
+/*
 //Chooses correct handler according to the expected type
 //expr = expression to be passed to correct handler
 //typeExpected = the expected type of expr
@@ -212,4 +327,4 @@ function mainParser(imports, codeArray){
     };
     var blob = new Blob([writer], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "CompiledCode.C");
-};
+};*/

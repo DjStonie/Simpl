@@ -40,7 +40,7 @@ function stringExpressionParser(expression){
     };
     return {"id": "error", "type": "error", "error": "missing expression"};
 };
-
+/*
 function verifyStringExpr(expression){
     const exprList = splitOnOperator(expression, stringOperators);
     let cantBeOperator = true;
@@ -100,4 +100,4 @@ function verifyStringExpr(expression){
         };
     };
     return {"type": "string"};
-};
+};*/
