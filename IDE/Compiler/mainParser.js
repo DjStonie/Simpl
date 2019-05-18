@@ -64,9 +64,8 @@ function lineController(codeLines){
                     break;
                 case "ccode":
                     const ccode = cParser(codeLines, codeLine);
+                    handler = ccode[0];
                     codeLine = ccode[1];
-                    console.log("husk!");
-                    console.log(ccode[0]);
                     break;
                 default:
                     return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           

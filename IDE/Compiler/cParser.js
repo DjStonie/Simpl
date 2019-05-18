@@ -6,7 +6,7 @@ function cParser(codeLines, codeLine){
         };
         cCode += codeLines[i] + "\n";
     };
-    return [{"id": "error", "type": "error", "error": "missing }"}, i];
+    return [{"id": "error", "type": "error", "error": "c-code missing }"}, i];
 };
 
 /*
