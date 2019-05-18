@@ -16,13 +16,18 @@ function mainController(code){
     //reset all current variables and functions
     variables = [[]];
     functions = [];
-
+    let writer = "";
     for (codeLines in code){
         const parsedCode = lineController(code[codeLines]);
         if (parsedCode.error){
             reportError(parsedCode);
-            break;
+        }
+        else{
+            writer += parsedCode;
         };
+    };
+    if (writer !== ""){
+        fileWriter("CompiledCode.C", writer);
     };
 };
 
@@ -71,7 +76,7 @@ function lineController(codeLines){
                     return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
             };
             if (handler.error){
-                return {...handler, "line": codeLine}
+                return {...handler, "line": codeLine};
             };
             writer += createIndent(indentLvl) +  handler + "\n";
         };
@@ -79,8 +84,7 @@ function lineController(codeLines){
     if (indentLvl !== 0){
         return {"id": "error", "type": "error", "error": "missing }"};
     };
-    fileWriter("CompiledCode.C", writer);
-    return "ok";
+    return writer;
 };
 
 function mainLineIdentifier(codeLine){
