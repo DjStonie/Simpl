@@ -1,3 +1,8 @@
+function reportError(error){
+    const textArea2 = document.getElementById("console");
+    textArea2.value = textArea2.value+"You made a mistake on line " + (error.line + 1) + ": " + error.error + "\n";
+};
+
 //Searches for a specific variable
 //name = name of variable to look up
 //variables = list with lists of variables

@@ -3,12 +3,11 @@ const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"
 const numbers = ["0","1","2","3","4","5","6","7","8","9"];
 const intOperators = ["+","-","/","*"];
 const boolOperators = ["=",">","<","&","|"];
-const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
+const stringOperators = ["+"];
+const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}, {"id": "string"}];
 const simplConditional = [{"id": "while"}, {"id": "if"}];
 const cReservedWords = ["auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned",
 "const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double"];
-const stringOperators = ["+"];
-const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}, {"id": "string"}];
 
 let variables = [[]]; //all current variables
 let functions = []; //all current funcitons
@@ -89,7 +88,7 @@ function lineIdentifier(line){
 //controls parsing
 //codeArray = array with lines of simpl code trimmed by codeReader()
 //return = 
-function mainParser(imports,codeArray){
+function mainParser(imports, codeArray){
     let writer = "//Imported code\n\n";
     //reset all current variables
     variables = [[]];

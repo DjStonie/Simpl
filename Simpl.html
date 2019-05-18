@@ -25,6 +25,7 @@
     <script src="IDE/Compiler/functionParser.js"></script>
     <script src="IDE/Compiler/expressionParser.js"></script>
     <script src="IDE/Compiler/cParser.js"></script>
+    <script src="IDE/Compiler/writerTools.js"></script>
 </head>
 <body>  
 <div class="navbar">
@@ -169,10 +170,11 @@
                 //system could save at this point
                 //Splitting on new line to maintain line numbers
                 //mainParser(codeReader($("#code").val()));
-              //!!!!
                 //lineController(codeReader($("#code").val()));
-                const parsedCode = codeReader();
-                mainParser(parsedCode[0],parsedCode[1]);
+
+                mainController(codeReader());
+                //const parsedCode = codeReader();
+                //mainParser(parsedCode[0],parsedCode[1]);
             });
     });
 
