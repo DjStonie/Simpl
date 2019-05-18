@@ -1,7 +1,7 @@
 function createIndent(indentLvl){
     let indent = "";
     for (var i = 0;i < indentLvl;i++){
-        writer += "    ";
+        indent += "    ";
     }
     return indent;
 }

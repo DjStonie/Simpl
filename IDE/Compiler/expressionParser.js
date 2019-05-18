@@ -107,9 +107,9 @@ function lineController(codeLines){
                     //console.log(varHandler(lineJson, codeLines[codeLine]));
                     break;
                 case "function":
-                    indentLvl += 1;
                     variables.push([]);
                     handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
+                    indentLvl += 1;
                     break;
                 case "conditional":
                     indentLvl += 1;
@@ -135,7 +135,7 @@ function lineController(codeLines){
                 //reportError(i, handler);
                 return {...handler, "line": codeLine}
             };
-            writer += handler + "\n";
+            writer += createIndent(indentLvl) +  handler + "\n";
         };
     };
     if (indentLvl !== 0){
@@ -277,15 +277,27 @@ function expressionParser(expression){
             return {...func, "id": "call", "operator": funcArgIndex};
         };
         if (expression === "true" || expression === "false"){
-            return {type: "bool"};
+            return {"type": "bool"};
         };
         const variable = lookUpVar(expression);
         if (variable.error){
             return variable;
         };
         return {"type": variable};
+    }
+    else if (sampleChar === "\""){
+        if (expression.charAt(expression.length - 1) !== "\""){
+            return {"id": "error", "type": "error", "error": "string must end in \""};
+        };
+        for (let i = 1; i < expression.length - 1; i++){
+            const nextChar = expression.charAt(i);
+            if (!(testChar(nextChar, letters) || testChar(nextChar, numbers))){
+                return {"id": "error", "type": "error", "error": "unexpected char expected letter or number got " + nextChar};
+            };
+        };
+        return {"type": "string"};
     };
-    return {"id": "error", "type": "error", "error": "unexpected char " + sampleChar};
+    return {"id": "error", "type": "error", "error": "unexpected char unknown char " + sampleChar};
 };
 //ingen minus variable
 
@@ -378,6 +390,8 @@ function mainExpressionParser(expression, expectedType){
             return intExpressionParser(expression);
         case "bool":
             return boolExpressionParser(expression);
+        case "string":
+            return stringExpressionParser(expression);
         default:
             return {"id": "error", "type": "error", "error": "unexpected type " + expectedType};
     };
