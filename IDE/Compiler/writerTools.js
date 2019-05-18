@@ -8,5 +8,5 @@ function createIndent(indentLvl){
 
 function fileWriter(name, writer){
     var blob = new Blob([writer], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, "name");
+    saveAs(blob, name);
 };

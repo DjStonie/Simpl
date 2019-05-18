@@ -1,4 +1,61 @@
-function conditionalParser(conditional, codeLine){
+function mainExpressionParser(expression, expectedType){
+    switch (expectedType){
+        case "int":
+            return intExpressionParser(expression);
+        case "bool":
+            return boolExpressionParser(expression);
+        case "string":
+            return stringExpressionParser(expression);
+        default:
+            return {"id": "error", "type": "error", "error": "unexpected type " + expectedType};
+    };
+};
+
+function expressionParser(expression){
+    const sampleChar = expression.charAt(0);
+    if (sampleChar === "-" || testChar(sampleChar, numbers)){
+        for (let i = 1; i < expression.length; i++){
+            if(!testChar(expression.charAt(i), numbers)){
+                return {"id": "error", "type": "error", "error": "unexpected character expected number got " + expression.charAt(i)};
+            };
+        };
+        return {"type": "int"};
+    }
+    else if (testChar(sampleChar, letters)){
+        const funcArgIndex = expression.indexOf("(");
+        if (funcArgIndex > 0){
+            const functionName = expression.substring(0, funcArgIndex);
+            const func = functionLookup(functionName);
+            if (func.error){
+                return func;
+            };
+            return {...func, "id": "call", "operator": funcArgIndex};
+        };
+        if (expression === "true" || expression === "false"){
+            return {"type": "bool"};
+        };
+        const variable = lookUpVar(expression);
+        if (variable.error){
+            return variable;
+        };
+        return {"type": variable};
+    }
+    else if (sampleChar === "\""){
+        if (expression.charAt(expression.length - 1) !== "\""){
+            return {"id": "error", "type": "error", "error": "string must end in \""};
+        };
+        for (let i = 1; i < expression.length - 1; i++){
+            const nextChar = expression.charAt(i);
+            if (!(testChar(nextChar, letters) || testChar(nextChar, numbers))){
+                return {"id": "error", "type": "error", "error": "unexpected char expected letter or number got " + nextChar};
+            };
+        };
+        return {"type": "string"};
+    };
+    return {"id": "error", "type": "error", "error": "unexpected char unknown char " + sampleChar};
+};
+
+/*function conditionalParser(conditional, codeLine){
     const endOfCondition = codeLine.indexOf(")");
     if (endOfCondition < 0){
         return {"type": "error", "error": "conditional syntax - missing )"};
@@ -145,6 +202,7 @@ function lineController(codeLines){
     return "ok";
 };
 
+
 //Handles return statements
 function returnParser(returnStr){
     if (returnStr.length > 0){
@@ -205,6 +263,7 @@ function mainLineIdentifier(codeLine){
     return {"id": "error", "type": "error", "error": "keyword not found"};
 };
 
+
 function functionCallArgParser(func, argsStr){
     let argsList = [];
     if(argsStr !== ""){
@@ -256,49 +315,7 @@ function functionCallParser(func, codeLineList, codeLineIndex){
     return {"id": "error", "type": "error", "error": "missing ) in function call"};
 };
 
-function expressionParser(expression){
-    const sampleChar = expression.charAt(0);
-    if (sampleChar === "-" || testChar(sampleChar, numbers)){
-        for (let i = 1; i < expression.length; i++){
-            if(!testChar(expression.charAt(i), numbers)){
-                return {"id": "error", "type": "error", "error": "unexpected character expected number got " + expression.charAt(i)};
-            };
-        };
-        return {"type": "int"};
-    }
-    else if (testChar(sampleChar, letters)){
-        const funcArgIndex = expression.indexOf("(");
-        if (funcArgIndex > 0){
-            const functionName = expression.substring(0, funcArgIndex);
-            const func = functionLookup(functionName);
-            if (func.error){
-                return func;
-            };
-            return {...func, "id": "call", "operator": funcArgIndex};
-        };
-        if (expression === "true" || expression === "false"){
-            return {"type": "bool"};
-        };
-        const variable = lookUpVar(expression);
-        if (variable.error){
-            return variable;
-        };
-        return {"type": variable};
-    }
-    else if (sampleChar === "\""){
-        if (expression.charAt(expression.length - 1) !== "\""){
-            return {"id": "error", "type": "error", "error": "string must end in \""};
-        };
-        for (let i = 1; i < expression.length - 1; i++){
-            const nextChar = expression.charAt(i);
-            if (!(testChar(nextChar, letters) || testChar(nextChar, numbers))){
-                return {"id": "error", "type": "error", "error": "unexpected char expected letter or number got " + nextChar};
-            };
-        };
-        return {"type": "string"};
-    };
-    return {"id": "error", "type": "error", "error": "unexpected char unknown char " + sampleChar};
-};
+
 //ingen minus variable
 
 function intExpressionParser(expression){
@@ -383,16 +400,4 @@ function boolExpressionParser(expression){
     }
     return {"id": "error", "type": "error", "error": "missing expression"};
 };
-
-function mainExpressionParser(expression, expectedType){
-    switch (expectedType){
-        case "int":
-            return intExpressionParser(expression);
-        case "bool":
-            return boolExpressionParser(expression);
-        case "string":
-            return stringExpressionParser(expression);
-        default:
-            return {"id": "error", "type": "error", "error": "unexpected type " + expectedType};
-    };
-};
+*/

@@ -1,3 +1,22 @@
+function conditionalParser(conditional, codeLine){
+    const endOfCondition = codeLine.indexOf(")");
+    if (endOfCondition < 0){
+        return {"type": "error", "error": "conditional syntax - missing )"};
+    };
+    const condition = codeLine.substring(conditional.contype.length + 1, endOfCondition);
+    if (condition === ""){
+        return {"type": "error", "error": "conditional missing boolean condition"};
+    };
+    verfiedCondition = mainExpressionParser(condition, "bool");
+    if (verfiedCondition.error){
+        return verfiedCondition; //maybe expand error message?
+    };
+    if (codeLine.charAt(codeLine.length - 1) === "{"){
+        return conditionalWriter(conditional, condition);
+    };
+    return {"id": "error", "type": "error", "error": "syntax missing { at end of line"};
+};
+
 //maybe doesnt need to test - just write
 function conditionalWriter(conditional, condition){
     switch(conditional.contype){
@@ -15,7 +34,7 @@ function conditionalWriter(conditional, condition){
         };
     return {"type": "error", "error": "internal error conditionalWriter - no match"}
 };
-
+/*
 function conditionalHandler(conditional, codeLine, codeArray){
     const endOfCondition = codeArray[codeLine].indexOf(")");
     if (endOfCondition < 0){
@@ -33,4 +52,4 @@ function conditionalHandler(conditional, codeLine, codeArray){
         return conditionalWriter(conditional, condition);
     };
     return {"type": "error", "error": "syntax missing { at end of line"};
-};
+};*/
