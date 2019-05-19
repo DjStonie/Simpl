@@ -13,7 +13,10 @@ function mainExpressionParser(expression, expectedType){
 
 function expressionParser(expression){
     const sampleChar = expression.charAt(0);
-    if (sampleChar === "-" || testChar(sampleChar, numbers)){
+    if (sampleChar === "-"){
+        return expressionParser(expression.substring(1));
+    }
+    else if (testChar(sampleChar, numbers)){
         for (let i = 1; i < expression.length; i++){
             if(!testChar(expression.charAt(i), numbers)){
                 return {"id": "error", "type": "error", "error": "unexpected character expected number got " + expression.charAt(i)};

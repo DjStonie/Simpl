@@ -8,6 +8,7 @@ const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}, {"id": "string
 const simplConditional = [{"id": "while"}, {"id": "if"}];
 const cReservedWords = ["auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned",
 "const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double"];
+//ARDUINO reserved words
 
 let variables = [[]]; //all current variables
 let functions = []; //all current funcitons
@@ -28,6 +29,7 @@ function mainController(code){
     };
     if (writer !== ""){
         fileWriter("CompiledCode.C", writer);
+        writeToConsole("Success! File ready.");
     };
 };
 
@@ -54,10 +56,10 @@ function lineController(codeLines){
                 case "function":
                     variables.push([]);
                     handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
-                    indentLvl += 1;
+                    //indentLvl += 1;
                     break;
                 case "conditional":
-                    indentLvl += 1;
+                    //indentLvl += 1;
                     variables.push([]);
                     handler = conditionalParser(lineJson, codeLines[codeLine]);
                     break;
@@ -79,6 +81,9 @@ function lineController(codeLines){
                 return {...handler, "line": codeLine};
             };
             writer += createIndent(indentLvl) +  handler + "\n";
+            if (lineJson.id === "function" || lineJson.id === "conditional"){
+                indentLvl += 1;
+            };
         };
     };
     if (indentLvl !== 0){
