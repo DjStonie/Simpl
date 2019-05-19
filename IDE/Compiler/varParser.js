@@ -6,7 +6,7 @@ function verifyName(nameStr){
         if (testChar(nameStr.charAt(0), letters)){
             for (let i = 1; i < nameStr.length; i++){
                 if (!(testChar(nameStr.charAt(i), numbers) || testChar(nameStr.charAt(i), letters))){
-                    return {"type": "error", "error": "name error wrong char"};
+                    return {"id": "error", "type": "error", "error": "name error wrong char"};
                 };
             };
             const keywordTest = testKeyword(nameStr);
@@ -15,9 +15,9 @@ function verifyName(nameStr){
             };
             return {"type": "ok"};
         };
-        return {"type": "error", "error": "naming error, var cannot start with number"};
+        return {"id": "error", "type": "error", "error": "naming error, var cannot start with number"};
     };
-    return {"type": "error", "error": "name error too short"};
+    return {"id": "error", "type": "error", "error": "name error too short"};
 };
 
 //Creates a string with c variable creations
@@ -41,7 +41,7 @@ function varHandler(varJson, codeLine){
     if (varJson.operator){
         const name = codeLine.substring(varJson.type.length, varJson.operator);
         if (lookUpVar(name).type !== "error"){  
-            return {"type": "error", "error": name + " already created"};
+            return {"id": "error", "type": "error", "error": name + " already created"};
         };
         const verifiedName = verifyName(name);
         if (verifiedName.type === "error"){
@@ -74,7 +74,7 @@ function varHandler(varJson, codeLine){
             if (verifiedVar === exprType.type){
                 return varWriter({...varJson, "name": name}, expression);
             };
-            return {"id": "error", "type": "error", "error": "type mismatch  expected " + verifiedVar + " found " + exprType.type};
+            return {"id": "error", "type": "error", "error": "expression type mismatch expected " + verifiedVar + " found " + exprType.type};
         };
         return {"id": "error", "type": "error", "error": "missing operator ="};
     };

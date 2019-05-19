@@ -1,6 +1,11 @@
 function reportError(error){
     const textArea2 = document.getElementById("console");
-    textArea2.value = textArea2.value+"You made a mistake on line " + (error.line + 1) + ": " + error.error + "\n";
+    textArea2.value = textArea2.value + "You made a mistake on line " + (error.line + 1) + ": " + error.error + "\n";
+};
+
+function writeToConsole(string){
+    const textArea2 = document.getElementById("console");
+    textArea2.value = textArea2.value + string + "\n";
 };
 
 //Searches for a specific variable
@@ -71,17 +76,17 @@ function splitOnOperator(str, operatorList){
 function testKeyword(nameStr){
     for (simpl in simplType){
         if (nameStr === simplType[simpl].id){
-            return {"id": "error", "type": "error", "error": "Name matches simpl reserved word - simpl type"};
+            return {"id": "error", "type": "error", "error": "Name " + nameStr + " matches simpl reserved word - simpl type"};
         };
     };
     for (simpl in simplConditional){
         if (nameStr === simplConditional[simpl].id){
-            return {"id": "error", "type": "error", "error": "Name matches simpl reserved word - simpl conditional"};
+            return {"id": "error", "type": "error", "error": "Name " + nameStr + "  matches simpl reserved word - simpl conditional"};
         };
     };
     for (cKeyword in cReservedWords){
         if (nameStr === cReservedWords[cKeyword]){
-            return {"id": "error", "type": "error", "error": "Name matches c reserved word"};
+            return {"id": "error", "type": "error", "error": "Name " + nameStr + "  matches c reserved word"};
         };
     };
     return {"keyword": "ok"};
