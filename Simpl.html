@@ -14,6 +14,7 @@
     <script src="IDE/JS/newFile.js"></script>
     <script src="IDE/JS/saveFile.js"></script>
     <script src="IDE/JS/loadFile.js"></script>
+    <script src="IDE/JS/translater.js"></script>
     <script src="IDE/Compiler/stringParser.js"></script>
     <script src="IDE/Compiler/convertImports.js"></script>
     <script src="IDE/Compiler/parserTools.js"></script>
@@ -44,8 +45,8 @@
   <div class="dropdown">
   <button class="dropbtn" id="Compile">Compile</button>
   <div class="dropdown-content" id="myDropdown">
-    <a href="#">.exe</a>
-    <a href="#">.ino</a>
+    <a href="#" id="compile-exe">.exe</a>
+    <a href="#" id="compile-ino">.ino</a>
     <a href="#" id="compile-c">.c</a>
   </div>
   </div>
@@ -55,7 +56,7 @@
         <div id="codeAndConsole" style="width: 100%;">
             <div>
                 <textarea id="importCode" type="hidden" style="display: none;"></textarea>
-                <textarea id="code" style="width: 98%; height: 60vh; padding-top: 0.4em;">kode</textarea>
+                <textarea id="code" style="width: 98%; height: 60vh; padding-top: 0.4em;"></textarea>
             </div>
             <br>
             <div>
@@ -65,33 +66,39 @@
         </div>
         <div id="helptextbox" style="width: 30%; min-height: 100%; margin-left: 10px;">
             <a class="closeHelp">&cross;</a>
-            <h1>Help</h1>
-            <textarea id="helptext" style="width: 95%; height: 80vh;">hjælp</textarea>
+            <h1 id="helpTitle">Help</h1>
+            <textarea id="helptext" style="width: 95%; height: 80vh;"></textarea>
         </div>
     </div>
     <!-- Popups -->
     <div>
         <div class="popup" id="savePopup">
             <a class="closePopup">&cross;</a>
-            <h1 class="popupHeadline">Save project</h1>
+            <h1 class="popupHeadline" id="saveProj">Save project</h1>
             <input type="text" placeholder="My first project" id="fileName">
             <button type="button" class="btn" id="saveExtern">Save</button>
         </div>
         <div class="popup" id="loadPopup">
             <a class="closePopup">&cross;</a>
-            <h1 class="popupHeadline">Load project</h1>
+            <h1 class="popupHeadline" id="loadProj">Load project</h1>
             <input type="file" id="loadExtern">
             <button type="button" class="btn" id="load">Load</button>
         </div>
         <div class="popup" id="settingsPopup">
             <a class="closePopup">&cross;</a>
-            <h1 class="popupHeadline">Settings</h1>
+            <h1 class="popupHeadline" id="settingsHeadline">Settings</h1>
             <button type="button" class="btn" id="codeIDE">Language IDE: English</button>
             <button type="button" class="btn" id="codeLang">Language code: English</button>
         </div>
+        <div class="popup" id="loadLangPopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline" id="loadLangHead">Load language</h1>
+            <input type="file" id="loadExternLang">
+            <button type="button" class="btn" id="loadLang">Load</button>
+        </div>
         <div class="popup" id="importPopup">
             <a class="closePopup">&cross;</a>
-            <h1 class="popupHeadline">Import project</h1>
+            <h1 class="popupHeadline" id="importHead">Import project</h1>
             <input type="file" id="importExtern">
             <button type="button" class="btn" id="importButton">Import</button>
         </div>
@@ -142,6 +149,14 @@
             $("#settings").click(function() {
               document.getElementById("settingsPopup").style.display = "block";
             });
+            $("#codeIDE").click(function() {
+              document.getElementById("loadLangPopup").style.display = "block";
+              document.getElementById("settingsPopup").style.display = "none";
+            });
+            $("#loadLang").click(function() {
+              document.getElementById("loadLangPopup").style.display = "none";
+              loadLang();
+            });
             //Import
             $("#import").click(function() {
               document.getElementById("importPopup").style.display = "block";
@@ -156,6 +171,7 @@
               document.getElementById("loadPopup").style.display = "none";
               document.getElementById("savePopup").style.display = "none";
               document.getElementById("importPopup").style.display = "none";
+              document.getElementById("loadLangPopup").style.display = "none";
             });
             //Help
             $("#help").click(function() {
