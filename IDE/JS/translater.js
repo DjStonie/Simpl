@@ -1,0 +1,32 @@
+function loadLang() {
+    var file = document.getElementById("loadExternLang").files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var json = JSON.parse(e.target.result);
+        document.getElementById("newFile").innerHTML = json.newFile;
+        document.getElementById("loadFile").innerHTML = json.loadFile;
+        document.getElementById("saveFile").innerHTML = json.saveFile;
+        document.getElementById("settings").innerHTML = json.settings;
+        document.getElementById("saveConsole").innerHTML = json.saveConsole;
+        document.getElementById("import").innerHTML = json.import;
+        document.getElementById("help").innerHTML = json.help;
+        document.getElementById("Compile").innerHTML = json.Compile;
+        document.getElementById("compile-exe").innerHTML = json.compileexe;
+        document.getElementById("compile-ino").innerHTML = json.compileino;
+        document.getElementById("compile-c").innerHTML = json.compilec;
+        document.getElementById("Run").innerHTML = json.Run;
+        document.getElementById("helpTitle").innerHTML = json.helpTitle;
+        document.getElementById("saveProj").innerHTML = json.saveProj;
+        document.getElementById("saveExtern").innerHTML = json.saveExtern;
+        document.getElementById("loadProj").innerHTML = json.loadProj;
+        document.getElementById("load").innerHTML = json.load;
+        document.getElementById("settingsHeadline").innerHTML = json.settingsHeadline;
+        document.getElementById("codeIDE").innerHTML = json.codeIDE;
+        document.getElementById("codeLang").innerHTML = json.codeLang;
+        document.getElementById("loadLangHead").innerHTML = json.loadLangHead;
+        document.getElementById("loadLang").innerHTML = json.loadLang;
+        document.getElementById("importHead").innerHTML = json.importHead;
+        document.getElementById("importButton").innerHTML = json.importButton;
+    };
+    reader.readAsText(file);
+};
