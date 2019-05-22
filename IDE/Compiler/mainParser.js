@@ -11,7 +11,7 @@ const cReservedWords = ["auto","else","long","switch","break","enum","register",
 //ARDUINO reserved words
 
 let variables = [[]]; //all current variables
-let functions = []; //all current funcitons
+let functions = []; //all current functions
 
 function mainController(code){
     //reset all current variables and functions
@@ -56,10 +56,8 @@ function lineController(codeLines){
                 case "function":
                     variables.push([]);
                     handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
-                    //indentLvl += 1;
                     break;
                 case "conditional":
-                    //indentLvl += 1;
                     variables.push([]);
                     handler = conditionalParser(lineJson, codeLines[codeLine]);
                     break;

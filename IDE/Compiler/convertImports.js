@@ -2,7 +2,7 @@
 function getConvertedCode() {
     //Getting value from hiden html element and spliting in lines
     var importCode = $("#importCode").val();
-    var importSplit = importCode.split("\n");
+    var importSplit = "//Imported code\n\n" +importCode.split("\n");
     //map to save imports in
     var imports = {};
 
@@ -21,7 +21,7 @@ function getConvertedCode() {
             }
         }
     };
-    var code = $("#code").val();
+    var code = "\n//Your code\n\n" + $("#code").val();
     var toProcessImports = "";
     if (imports.length!=0){
         //replace imports with the code for the import
