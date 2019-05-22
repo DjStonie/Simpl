@@ -9,7 +9,7 @@
     <script src="main.js"></script>
 </head>
 <body>
-    
+        <a href="#opening"></a>
     <div id="handbook">
         <div id="vars">
             <h1>
@@ -17,7 +17,7 @@
             </h1>
                 Declare variables of different types and store for later use. Must be correct type.
             <p>
-                <b>Syntax:</b> [TYPE] [NAME] = [EXPRESSION]
+                <b>Syntax:</b> [<a href="#types">TYPE</a>] [<a href="#name">NAME</a>] = [<a href="#expression">EXPRESSION</a>]
             </p>
             <p>
                 <b>Example:</b> int variableName = 2 + 3
@@ -29,8 +29,8 @@
             </h1>
                 Declare functions of different return types and store for later use. Must be correct type. Use comma to separate arguments.
             <p>
-                <b>Syntax:</b> [TYPE] [NAME] ([TYPE] [NAME]){ <br>
-                    [EXPRESSION]; <br>
+                <b>Syntax:</b> [<a href="#types">TYPE</a>] [<a href="#name">NAME</a>] ([<a href="#types">TYPE</a>] [<a href="#name">NAME</a>]){ <br>
+                    [<a href="#expression">EXPRESSION</a>]; <br>
                     }
             </p>
             <p>
@@ -62,7 +62,7 @@
                         </h1>
                             Declare a condition and run code if that condtion is true.
                         <p>
-                            <b>Syntax:</b> if ([BOOL EXPRESSION]){<br>
+                            <b>Syntax:</b> if ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){<br>
                             [CODE]<br>
                             }
                         </p>
@@ -78,7 +78,7 @@
                     </h1>
                         Declare a condition and run code until that condtion is false.
                     <p>
-                    <b>Syntax:</b> while ([BOOL EXPRESSION]){ <br>
+                    <b>Syntax:</b> while ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){ <br>
                             [CODE]; <br>
                             }
                     </p>
@@ -97,7 +97,7 @@
                         </h1>
                             An integer
                         <p>
-                        <b>Syntax:</b> while ([BOOL EXPRESSION]){ <br>
+                        <b>Syntax:</b> while ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){ <br>
                                 [CODE]; <br>
                                 }
                         </p>
@@ -113,7 +113,7 @@
                         </h1>
                             A boolean value
                         <p>
-                        <b>Syntax:</b> while ([BOOL EXPRESSION]){ <br>
+                        <b>Syntax:</b> while ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){ <br>
                                 [CODE]; <br>
                                 }
                         </p>
@@ -129,7 +129,7 @@
                     <h1>
                             Void
                         </h1>
-                            When a function does not return another [TYPE] it returns void. Functions returning void do not have a return statement.
+                            When a function does not return another [<a href="#types">TYPE</a>] it returns void. Functions returning void do not have a return statement.
                         <p>
                                 <b>Example:</b> void sum(int arg1,int arg2){<br>             
                                     return arg1 + arg2<br>
@@ -138,7 +138,7 @@
 
             </div>
         </div>
-        <div id="Name">
+        <div id="name">
             <h1>
                 [NAME]
             </h1>
@@ -158,7 +158,7 @@
                 <b>Syntax:</b> An expression ending in a type.
             </p>
             <p>
-                <b>Examples:</b> [BOOL EXPRESSION] 2 > 2 <br> [INT EXPRESSION] 2 - 1
+                <b>Examples:</b> [<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>] 2 > 2 <br> [<a href="#int">INT</a> <a href="#expression">EXPRESSION</a>] 2 - 1
             </p>
             </div>
     </div>
@@ -173,19 +173,19 @@ const simplType = [{"id": "int"}, {"id": "void"}, {"id": "bool"}];
 const simplConditional = [{"id": "while"}, {"id": "for"}, {"id": "if"}]
 */
 //Types
-const int = {"type": "int", "operators": intOperators};
-const bool = {"type": "bool", "operators": boolOperators};
-const voids = {"type": "void", "operators": "none"};
+//const int = {"type": "int", "operators": intOperators};
+//const bool = {"type": "bool", "operators": boolOperators};
+//const voids = {"type": "void", "operators": "none"};
 //Conditionals
-const ifCond = {"type": "if", }
+//const ifCond = {"type": "if", }
 
 //names
-const names = {""}
+//const names = {""}
 
 
 //variables
 
-
+/*
 //Functions
 const functions = {
     "Type": "function",
@@ -193,7 +193,7 @@ const functions = {
     "namingchars": [{"name": "letters", "list": letters}, {"name": "numbers", "list": numbers}],
     "description": "Specify return type then name enclose arguments with () specifying their type and number",
     "example": "[TYPE] [NAME] ([TYPE] [NAME])"
-};
+};*/
     </script>
 </body>
 </html>
