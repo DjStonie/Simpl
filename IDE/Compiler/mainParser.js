@@ -22,6 +22,7 @@ function mainController(code){
         const parsedCode = lineController(code[codeLines]);
         if (parsedCode.error){
             reportError(parsedCode);
+            break;
         }
         else{
             writer += parsedCode;
@@ -135,7 +136,7 @@ function mainLineIdentifier(codeLine){
             return {...functions[func], "id": "call", "operator": exprIndex};
         };
     };
-    return {"id": "error", "type": "error", "error": "keyword not found"};
+    return {"id": "error", "type": "error", "error": "keyword not found " + codeLine};
 };
 /*
 //Chooses correct handler according to the expected type
