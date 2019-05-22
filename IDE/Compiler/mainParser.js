@@ -74,6 +74,9 @@ function lineController(codeLines){
                     handler = ccode[0];
                     codeLine = ccode[1];
                     break;
+                case "comment":
+                    handler = codeLines[codeLine];
+                    break;
                 default:
                     return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
             };
@@ -95,6 +98,9 @@ function lineController(codeLines){
 function mainLineIdentifier(codeLine){
     if (codeLine === "}"){
         return {"id": "end"};
+    };
+    if (codeLine.startsWith("//")){
+        return {"id": "comment"};
     };
     if (codeLine === "c{"){
         return {"id": "ccode"};
