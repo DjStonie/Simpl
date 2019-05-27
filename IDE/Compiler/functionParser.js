@@ -16,7 +16,7 @@ function functionLookup(name){
             return functions[func];
         };
     };
-    return {"type": "error", "error": "function not found " + name};
+    return {"id": "error", "type": "error", "error": "function not found " + name};
 };
 
 function functionHandler(func, line){

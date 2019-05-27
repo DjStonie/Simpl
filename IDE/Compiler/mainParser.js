@@ -31,6 +31,8 @@ function mainController(code){
     if (writer !== ""){
         fileWriter("CompiledCode.C", writer);
         writeToConsole("Success! File ready.");
+    }else if (codeLines == code.length) {
+        reportError({"id": "error", "type": "error", "error": "No code found", "line": 0});
     };
 };
 
@@ -49,7 +51,7 @@ function lineController(codeLines){
                     handler = "};";
                     break;
                 case "error":
-                    handler = {...lineJson, "line": codeLine};
+                    handler = lineJson;
                     break;
                 case "var":
                     handler = varHandler(lineJson, codeLines[codeLine]);

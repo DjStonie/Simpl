@@ -6,7 +6,7 @@ function verifyName(nameStr){
         if (testChar(nameStr.charAt(0), letters)){
             for (let i = 1; i < nameStr.length; i++){
                 if (!(testChar(nameStr.charAt(i), numbers) || testChar(nameStr.charAt(i), letters))){
-                    return {"id": "error", "type": "error", "error": "name error wrong char"};
+                    return {"id": "error", "type": "error", "error": "name error wrong char " + nameStr.charAt(i)};
                 };
             };
             const keywordTest = testKeyword(nameStr);
@@ -40,13 +40,13 @@ function varWriter(typeObj, expression){
 function varHandler(varJson, codeLine){
     if (varJson.operator){
         const name = codeLine.substring(varJson.type.length, varJson.operator);
-        if (lookUpVar(name).type !== "error"){  
-            return {"id": "error", "type": "error", "error": name + " already created"};
-        };
         const verifiedName = verifyName(name);
         if (verifiedName.type === "error"){
             return verifiedName;
-        };  
+        }; 
+        if (lookUpVar(name).type !== "error"){  
+            return {"id": "error", "type": "error", "error": name + " already created"};
+        };
         const expression = codeLine.substring(varJson.operator + 1);
         const exprType = mainExpressionParser(expression, varJson.type);
         if (exprType.error){
