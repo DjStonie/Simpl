@@ -11,7 +11,7 @@ const cReservedWords = ["auto","else","long","switch","break","enum","register",
 //ARDUINO reserved words
 
 let variables = [[]]; //all current variables
-let functions = []; //all current funcitons
+let functions = []; //all current functions
 
 function mainController(code){
     //reset all current variables and functions
@@ -22,6 +22,7 @@ function mainController(code){
         const parsedCode = lineController(code[codeLines]);
         if (parsedCode.error){
             reportError(parsedCode);
+            break;
         }
         else{
             writer += parsedCode;
@@ -30,6 +31,8 @@ function mainController(code){
     if (writer !== ""){
         fileWriter("CompiledCode.C", writer);
         writeToConsole("Success! File ready.");
+    }else if (codeLines == code.length) {
+        reportError({"id": "error", "type": "error", "error": "No code found", "line": 0});
     };
 };
 
@@ -48,7 +51,7 @@ function lineController(codeLines){
                     handler = "};";
                     break;
                 case "error":
-                    handler = {...lineJson, "line": codeLine};
+                    handler = lineJson;
                     break;
                 case "var":
                     handler = varHandler(lineJson, codeLines[codeLine]);
@@ -56,10 +59,8 @@ function lineController(codeLines){
                 case "function":
                     variables.push([]);
                     handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
-                    //indentLvl += 1;
                     break;
                 case "conditional":
-                    //indentLvl += 1;
                     variables.push([]);
                     handler = conditionalParser(lineJson, codeLines[codeLine]);
                     break;
@@ -73,6 +74,9 @@ function lineController(codeLines){
                     const ccode = cParser(codeLines, codeLine);
                     handler = ccode[0];
                     codeLine = ccode[1];
+                    break;
+                case "comment":
+                    handler = codeLines[codeLine];
                     break;
                 default:
                     return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
@@ -95,6 +99,9 @@ function lineController(codeLines){
 function mainLineIdentifier(codeLine){
     if (codeLine === "}"){
         return {"id": "end"};
+    };
+    if (codeLine.startsWith("//")){
+        return {"id": "comment"};
     };
     if (codeLine === "c{"){
         return {"id": "ccode"};
@@ -131,7 +138,7 @@ function mainLineIdentifier(codeLine){
             return {...functions[func], "id": "call", "operator": exprIndex};
         };
     };
-    return {"id": "error", "type": "error", "error": "keyword not found"};
+    return {"id": "error", "type": "error", "error": "keyword not found " + codeLine};
 };
 /*
 //Chooses correct handler according to the expected type

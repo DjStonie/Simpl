@@ -60,7 +60,7 @@ function importButton() {
         textArea.value += e.target.result;
         textArea.value += "\nimportEnd "+file.name.replace('.Simpl', '')+"\n";
         var textArea2 = document.getElementById("code");
-        textArea2.value = "import "+file.name.replace('.Simpl', '')+"\n"+textArea2.value
+        textArea2.value = "import "+file.name.replace('.Simpl', '')+"\n"+textArea2.value;
     };
     reader.readAsText(file);
 };

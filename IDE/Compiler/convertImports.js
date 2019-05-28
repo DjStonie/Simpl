@@ -1,7 +1,7 @@
 // converts import lines to the code from the hidden textfield
 function getConvertedCode() {
     //Getting value from hiden html element and spliting in lines
-    var importCode = $("#importCode").val();
+    var importCode = "//Imported code\n\n" + $("#importCode").val() + "\n//Your code\n\n";
     var importSplit = importCode.split("\n");
     //map to save imports in
     var imports = {};

@@ -27,6 +27,7 @@
     <script src="IDE/Compiler/expressionParser.js"></script>
     <script src="IDE/Compiler/cParser.js"></script>
     <script src="IDE/Compiler/writerTools.js"></script>
+    <script src="IDE/Help/help.js"></script>
 </head>
 <body>  
 <div class="navbar">
@@ -66,8 +67,9 @@
         </div>
         <div id="helptextbox" style="width: 30%; min-height: 100%; margin-left: 10px;">
             <a class="closeHelp">&cross;</a>
-            <h1 id="helpTitle">Help</h1>
-            <textarea id="helptext" style="width: 95%; height: 80vh;"></textarea>
+            <div id="help-container"></div>
+            <!--<h1 id="helpTitle">Help</h1>-->
+            <!--<textarea id="helptext" style="width: 95%; height: 80vh;"></textarea>-->
         </div>
     </div>
     <!-- Popups -->
@@ -120,6 +122,7 @@
         });
 
         $(document).ready(function(){
+            setupHandbook()
             //new
             $("#newFile").click(function() {
               newButton();
@@ -180,6 +183,7 @@
             $(".closeHelp").click(function() {
               document.getElementById("helptextbox").style.display = "none";
             });
+            //Compile code to C
             $( "#compile-c" ).click(() => {
                 event.preventDefault();
                 //use return value of codeReader to give to parser
