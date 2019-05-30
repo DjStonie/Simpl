@@ -29,7 +29,7 @@ function mainController(code){
         };
     };
     if (writer !== ""){
-        fileWriter("CompiledCode.C", writer);
+        fileWriter("CReadyCode.C", writer);
         writeToConsole("Success! File ready.");
     }else if (codeLines == code.length) {
         reportError({"id": "error", "type": "error", "error": "No code found", "line": 0});
@@ -118,7 +118,7 @@ function mainLineIdentifier(codeLine){
             }else if (exprFunctionIndex > 0 && (exprFunctionIndex < exprVarIndex || exprVarIndex < 0)){
                 return {"id": "function", "type": simplType[simpl].id, "operator": exprFunctionIndex};
             };
-            return {"id": "error", "type": "error", "error": "var or func?"};
+            return {"id": "error", "type": "error", "error": "variable or function?"};
         };
     };
     for (simpl in simplConditional){

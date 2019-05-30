@@ -137,6 +137,12 @@ function functionDeclarationHandler(newFunc, line){
         if (verifiedName.error){
             return verifiedName;
         };
+        if (lookUpVar(name).type !== "error"){  
+            return {"id": "error", "type": "error", "error": "variable " + name + " already created"};
+        };
+        if (functionLookup(name).type !== "error"){
+            return {"id": "error", "type": "error", "error": "function " + name + " already created"};
+        };
         const argsStr = line.substring(newFunc.operator + 1, argEndIndex);
         const args = functionArgHandler(argsStr);
         if (args.error){

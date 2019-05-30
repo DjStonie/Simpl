@@ -45,7 +45,10 @@ function varHandler(varJson, codeLine){
             return verifiedName;
         }; 
         if (lookUpVar(name).type !== "error"){  
-            return {"id": "error", "type": "error", "error": name + " already created"};
+            return {"id": "error", "type": "error", "error": "variable " + name + " already created"};
+        };
+        if (functionLookup(name).type !== "error"){
+            return {"id": "error", "type": "error", "error": "function " + name + " already created"};
         };
         const expression = codeLine.substring(varJson.operator + 1);
         const exprType = mainExpressionParser(expression, varJson.type);
