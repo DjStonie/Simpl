@@ -46,7 +46,10 @@ function expressionParser(expression){
     else if (sampleChar === "\""){
         if (expression.charAt(expression.length - 1) !== "\""){
             return {"id": "error", "type": "error", "error": "string must end in \""};
-        };
+        };/*
+        if (testStr(expression, stringOperators)) {
+            return intExpressionParser(expression);
+        };*/
         for (let i = 1; i < expression.length - 1; i++){
             const nextChar = expression.charAt(i);
             if (!(testChar(nextChar, letters) || testChar(nextChar, numbers))){

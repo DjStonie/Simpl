@@ -19,23 +19,31 @@ function boolExpressionParser(expression){
             operatorSwitch = false;
         }
         else{
-            const exprType = expressionParser(exprList[expr]);
-
-            if(exprType.id === "call"){
-                const functionCall = functionCallParser(exprType, exprList, expr);
-                if(functionCall.type === "bool" || functionCall.type === "int"){
-                    operatorSwitch = true;
-                    expr = functionCall.newindex;
-                }
-                else{
-                    return functionCall;
-                };     
-            }
-            else if (exprType.type === "int" || exprType.type === "bool"){
+            if (testStr(exprList[expr], intOperators)) {
+                const intExpr = intExpressionParser(exprList[expr]);
+                if (intExpr.type !== "int"){
+                    return intExpr;
+                };
                 operatorSwitch = true;
-            } 
+            }
             else{
-                return exprType;
+                const exprType = expressionParser(exprList[expr]);
+                if(exprType.id === "call"){
+                    const functionCall = functionCallParser(exprType, exprList, expr);
+                    if(functionCall.type === "bool" || functionCall.type === "int"){
+                        operatorSwitch = true;
+                        expr = functionCall.newindex;
+                    }
+                    else{
+                        return functionCall;
+                    };     
+                }
+                else if (exprType.type === "int" || exprType.type === "bool"){
+                    operatorSwitch = true;
+                } 
+                else{
+                    return exprType;
+                };
             };
         };
     };
