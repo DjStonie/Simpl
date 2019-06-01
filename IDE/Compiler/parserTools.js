@@ -1,18 +1,32 @@
+///Report an error to console
+//error = error-json to be written to console
 function reportError(error){
     const textArea2 = document.getElementById("console");
     textArea2.value = textArea2.value + "You made a mistake on line " + (error.line + 1) + ": " + error.error + "\n";
 };
-
+//Write to console in Simpl IDE
+//string = string to write to be written console
 function writeToConsole(string){
     const textArea2 = document.getElementById("console");
     textArea2.value = textArea2.value + string + "\n";
+};
+//Searches for a specific function
+//name = name of the function to find
+//return = string with the type of the function or error if nothing was found
+function functionLookup(name){
+    for (func in functions){
+        if(functions[func].name === name){
+            return functions[func];
+        };
+    };
+    return {"id": "error", "type": "error", "error": "function not found " + name};
 };
 
 //Searches for a specific variable
 //name = name of variable to look up
 //variables = list with lists of variables
 //return = string with type of variable found or error if nothing was found
-function lookUpVar(name){
+function variableLookup(name){
     for (stack in variables){
         for (vars in variables[stack]){
             if (variables[stack][vars] && name === variables[stack][vars].name){
@@ -26,7 +40,6 @@ function lookUpVar(name){
 
 //Splits on newline into array
 //Removes white space and changes everything to lower case
-//code = string
 //return = array with trimmed strings split on \n
 function codeReader(){
     let importsAndCode = getConvertedCode();
@@ -73,6 +86,9 @@ function splitOnOperator(str, operatorList){
     return returnList;
 };
 
+//tests if a name consists of a reserved keyword
+//nameStr = string with the name to be tested
+//returns = {"keyword": "ok"} if no conflicts were found otherwise error with the conflict
 function testKeyword(nameStr){
     for (simpl in simplType){
         if (nameStr === simplType[simpl].id){
@@ -92,7 +108,10 @@ function testKeyword(nameStr){
     return {"keyword": "ok"};
 };
 
-//
+//Tests if any char in a string is a part of a set
+//str = string of chars to be tested
+//set = set of char/strings to be tested against
+//return = if any char in the string is part of the set testStr returns true otherwise false 
 function testStr(str, set){
     for (char in str){
         if(testChar(str.charAt(char), set)){
@@ -102,7 +121,7 @@ function testStr(str, set){
     return false;
 };
 
-//Tests if a char is a part of a set of chars
+//Tests if a char (or string) is a part of a set of chars
 //char = char to be tested
 //set = set to be tested against
 //return = true if char is a part of set otherwise false
