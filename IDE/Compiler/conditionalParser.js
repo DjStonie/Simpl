@@ -1,3 +1,7 @@
+//Parses a conditional
+//conditional = conditional-json information
+//codeLine = string with the line of code where conditional was found
+//return = string with translated code, produced by writer or error
 function conditionalParser(conditional, codeLine){
     const endOfCondition = codeLine.indexOf(")");
     if (endOfCondition < 0){
@@ -9,7 +13,7 @@ function conditionalParser(conditional, codeLine){
     };
     verfiedCondition = mainExpressionParser(condition, "bool");
     if (verfiedCondition.error){
-        return verfiedCondition; //maybe expand error message?
+        return verfiedCondition;
     };
     if (codeLine.charAt(codeLine.length - 1) === "{"){
         return conditionalWriter(conditional, condition);
@@ -17,39 +21,20 @@ function conditionalParser(conditional, codeLine){
     return {"id": "error", "type": "error", "error": "syntax missing { at end of line"};
 };
 
-//maybe doesnt need to test - just write
+//Writes a conditional to string
+//conditional = conditional-json information
+//condition = the condition part of a conditional
+//return = string with translated code according to type of conditional or error
 function conditionalWriter(conditional, condition){
     switch(conditional.contype){
         case "if":
             const newLine = conditional.contype + " (" + condition + "){";
-            return newLine;
-            break;             
+            return newLine;           
         case "for":
             return {"id": "error", "type": "error", "error": "internal error conditionalWriter - no match - for"};
-            break;
         case "while":
             const newLine2 = conditional.contype + " (" + condition + "){";
             return newLine2;
-            break;
         };
-    return {"id": "error", "type": "error", "error": "internal error conditionalWriter - no match"}
+    return {"id": "error", "type": "error", "error": "internal error conditionalWriter - no match"};
 };
-/*
-function conditionalHandler(conditional, codeLine, codeArray){
-    const endOfCondition = codeArray[codeLine].indexOf(")");
-    if (endOfCondition < 0){
-        return {"type": "error", "error": "conditional syntax - missing )"};
-    };
-    const condition = codeArray[codeLine].substring(conditional.contype.length + 1, endOfCondition);
-    if (condition === ""){
-        return {"type": "error", "error": "conditional missing boolean condition"};
-    };
-    verfiedCondition = verifyBoolExpr(condition);
-    if (verfiedCondition.error){
-        return verfiedCondition; //maybe expand error message?
-    };
-    if (codeArray[codeLine].charAt(codeArray[codeLine].length - 1) === "{"){
-        return conditionalWriter(conditional, condition);
-    };
-    return {"type": "error", "error": "syntax missing { at end of line"};
-};*/

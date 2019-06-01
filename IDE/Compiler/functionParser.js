@@ -1,32 +1,36 @@
+//Creates a string with a function declaration
+//newFunc = function-json with information on a function declaration
+//args = string with the argument part of a function declaration
+//name = string with name of function
+//return = string with translated Simpl
 function functionWriter(newFunc, args, name){
     return newFunc.type + " " + name + "(" + args + "){";
 };
-
-function functionCallWriter(str){
-    return str + ";";
+//Creates a string with a function call
+//functionCallStr = string with function call
+//return = string with translated Simpl
+function functionCallWriter(functionCallStr){
+    return functionCallStr + ";";
 };
-
+//Creates a string with a return statemeent
+//returnStr = string with return statement
+//return = string with translated Simpl
 function returnWriter(returnStr){
     return "return " + returnStr + ";";
 };
-
-function functionLookup(name){
-    for (func in functions){
-        if(functions[func].name === name){
-            return functions[func];
-        };
-    };
-    return {"id": "error", "type": "error", "error": "function not found " + name};
-};
-
-function functionHandler(func, line){
+//Switches between function declarations and calls
+//func = function-json with information about function declaration or call
+//codeLine = current line of code where function declaration or call was found
+function functionHandler(func, codeLine){
     if (func.functiontype === "call"){
-        return functionCallHandler(func, line);
+        return functionCallHandler(func, codeLine);
     }
-    return functionDeclarationHandler(func, line);
+    return functionDeclarationHandler(func, codeLine);
 };
 
-//Handles return statements
+//Parses return statements
+//returnStr = the expression part of a Simpl return statement
+//return = string from returnWriter med translated Simpl or error
 function returnParser(returnStr){
     if (returnStr.length > 0){
         if (functions[functions.length - 1].type !== "void"){
@@ -43,7 +47,10 @@ function returnParser(returnStr){
     };
     return {"id": "error", "type": "error", "error": "missing statement after return"};
 };
-
+//Parses argument part of function calls
+//func = function-json with information the function call
+//argsStr = string with argument part of function declaration
+//return = {"args": "ok"} if arguments are ok or error
 function functionCallArgParser(func, argsStr){
     let argsList = [];
     if(argsStr !== ""){
@@ -70,7 +77,11 @@ function functionCallArgParser(func, argsStr){
     };
     return {"args": "ok"};
 };
-
+//Parses function calls
+//func = function-json with information the function call
+//codeLineList = List of current line of code split by type operators
+//codeLineIndex = index of current line of Simpl code
+//return = function-json if function call is ok or error
 function functionCallParser(func, codeLineList, codeLineIndex){
     const funcCallArgsEnd = codeLineList[codeLineIndex].charAt(codeLineList[codeLineIndex].length - 1);
     if(funcCallArgsEnd === ")"){
@@ -81,7 +92,7 @@ function functionCallParser(func, codeLineList, codeLineIndex){
         return args;
     };
     let arguments = codeLineList[codeLineIndex].substring(func.operator + 1);
-    for (let i = parseInt(codeLineIndex) + 1; i < codeLineList.length; i++){
+    for (let i = parseInt(codeLineIndex) + 1; i < codeLineList.length; i++){ //needed parseint?
         const funcCallArgsEnd = codeLineList[i].charAt(codeLineList[i].length - 1);
         if(funcCallArgsEnd === ")"){
             const args = functionCallArgParser(func, arguments + codeLineList[i].substring(0, codeLineList[i].length - 1));
@@ -94,7 +105,9 @@ function functionCallParser(func, codeLineList, codeLineIndex){
     };
     return {"id": "error", "type": "error", "error": "missing ) in function call"};
 };
-
+//Parses argument part of function declaration
+//argStr = string argument part of function declaration
+//return = List of argument variabel types and names
 function functionArgHandler(argStr){
     if (argStr.length > 0){
         const argList = argStr.split(",");
@@ -107,7 +120,7 @@ function functionArgHandler(argStr){
                     };
                     const varType = simplType[rule].id;
                     const varName = argList[arg].substring(varType.length);
-                    if(lookUpVar(varName).error){
+                    if(variableLookup(varName).error){
                         isNameOk = verifyName(varName);
                         if(isNameOk.error){
                             return isNameOk;
@@ -125,7 +138,10 @@ function functionArgHandler(argStr){
     };
     return [];
 };
-
+//Parses a function declaration
+//newfunc = function-json with information the function call
+//line = string with Simpl code identified as a function declaration
+//return = string from functionWriter with translated Simpl or error
 function functionDeclarationHandler(newFunc, line){
     if(line.charAt(line.length - 1) === "{"){
         const argEndIndex = line.indexOf(")");
@@ -136,6 +152,12 @@ function functionDeclarationHandler(newFunc, line){
         const verifiedName = verifyName(name);
         if (verifiedName.error){
             return verifiedName;
+        };
+        if (variableLookup(name).type !== "error"){  
+            return {"id": "error", "type": "error", "error": "variable " + name + " already created"};
+        };
+        if (functionLookup(name).type !== "error"){
+            return {"id": "error", "type": "error", "error": "function " + name + " already created"};
         };
         const argsStr = line.substring(newFunc.operator + 1, argEndIndex);
         const args = functionArgHandler(argsStr);
@@ -149,76 +171,3 @@ function functionDeclarationHandler(newFunc, line){
         return {"type": "error", "error": "syntax missing { at end of line"};
     };
 };
-
-/*
-function functionCallParser(func, codeLine){
-    const args = functionCallArgHandler(func, codeLine);
-    if (args.error){
-        return args;
-    };
-    return functionCallWriter(codeLine);
-};
-*/
-
-/*
-//Handles return statements
-function returnHandler(returnStr){
-    if (returnStr.length > 0){
-        if (functions[functions.length - 1].functiontype !== "void"){
-            const exprType = expressionHandler(returnStr, functions[functions.length - 1].functiontype);
-            if(exprType.error){
-                return exprType;
-            }
-            if (functions[functions.length - 1].functiontype === exprType.type){
-                return returnWriter(returnStr);
-            };
-            return {"type": "error", "error": "return function type mismatch"};
-        };
-        return {"type": "error", "error": "return type void cannot return"};
-    };
-    return {"type": "error", "error": "missing statement after return"};
-};
-*/
-/*
-function functionCallArgHandler(func, callStr){
-    callStr = callStr.substring(callStr.indexOf("(") + 1, callStr.indexOf(")"));
-    let callList = [];
-    if(callStr !== ""){
-        callList = callStr.split(",");
-    };
-    if (func.args.length !== callList.length){
-        return {"type": "error", "error": "wrong number of arguments"};
-    };
-        //console.log(func.args);
-        //console.log(callList);
-    for (call in callList){
-        const exprType = expressionHandler(callList[call], func.args[call].vartype);
-        if (exprType.error){
-                return exprType;
-        };
-        if (func.args[call] === "int"){
-            if (exprType.int !== "ok"){
-                return {"type": "error", "error": "function argument type mismatch"};
-            };
-        };
-        if (func.args[call] === "bool"){
-            if (exprType.bool !== "ok"){
-                return {"type": "error", "error": "function argument type mismatch"};
-            };
-        };
-    };
-    return {"args": "ok"};
-};
-
-function functionCallHandler(name, callStr){
-    const func = functionLookup(name.name);
-    if (func.error){
-        return func;
-    };
-    const args = functionCallArgHandler(func, callStr);
-    if (args.error){
-        return args;
-    };
-    return functionCallWriter(callStr);
-};
-*/
