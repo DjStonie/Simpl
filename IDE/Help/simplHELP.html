@@ -30,7 +30,7 @@
                 Declare functions of different return types and store for later use. Must be correct type. Use comma to separate arguments.
             <p>
                 <b>Syntax:</b> [<a href="#types">TYPE</a>] [<a href="#name">NAME</a>] ([<a href="#types">TYPE</a>] [<a href="#name">NAME</a>]){ <br>
-                    [<a href="#expression">EXPRESSION</a>]; <br>
+                    [<a href="#expression">EXPRESSION</a>] <br>
                     }
             </p>
             <p>
@@ -44,17 +44,6 @@
                 Conditionals
             </h1>
                 Create conditions to decide if code should run.
-                <!--
-            <p>
-                <b>Syntax:</b> [TYPE] [NAME] ([TYPE] [NAME]){ <br>
-                    [EXPRESSION]; <br>
-                    }
-            </p>
-            <p>
-                <b>Example:</b> int sum(int arg1,int arg2){<br>             
-                return arg1 + arg2<br>
-                }
-                </p>-->
             <div id="condstypes">
                 <div id="if">
                         <h1>
@@ -79,7 +68,7 @@
                         Declare a condition and run code until that condtion is false.
                     <p>
                     <b>Syntax:</b> while ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){ <br>
-                            [CODE]; <br>
+                            [CODE] <br>
                             }
                     </p>
                     <p>
@@ -97,9 +86,8 @@
                         </h1>
                             An integer
                         <p>
-                        <b>Syntax:</b> while ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){ <br>
-                                [CODE]; <br>
-                                }
+                        <b>Syntax:</b> <br>Declare: int [<a href="#name">NAME</a>] = 12 <br>
+                        Update: [<a href="#name">NAME</a>] = 0
                         </p>
                         <p>
                             <b>Example:</b> while(true){<br>             
@@ -113,9 +101,8 @@
                         </h1>
                             A boolean value
                         <p>
-                        <b>Syntax:</b> while ([<a href="#bool">BOOL</a> <a href="#expression">EXPRESSION</a>]){ <br>
-                                [CODE]; <br>
-                                }
+                        <b>Syntax:</b> <br>Declare: bool [<a href="#name">NAME</a>] = true <br>
+                        Update: [<a href="#name">NAME</a>] = true
                         </p>
                         <p>
                             <b>Example1:</b> true
