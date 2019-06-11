@@ -74,6 +74,12 @@
     </div>
     <!-- Popups -->
     <div>
+        <div class="popup" id="newPopup">
+            <a class="closePopup">&cross;</a>
+            <h1 class="popupHeadline" id="newProj">New</h1>
+            <button type="button" class="btn" id="newC">New .c</button>
+            <button type="button" class="btn" id="newINO">New .ino</button>
+        </div>
         <div class="popup" id="savePopup">
             <a class="closePopup">&cross;</a>
             <h1 class="popupHeadline" id="saveProj">Save project</h1>
@@ -125,7 +131,15 @@
             setupHandbook()
             //new
             $("#newFile").click(function() {
+              document.getElementById("newPopup").style.display = "block";
+            });
+            $("#newC").click(function() {
+              document.getElementById("newPopup").style.display = "none";
               newButton();
+            });
+            $("#newINO").click(function() {
+              document.getElementById("newPopup").style.display = "none";
+              newButtonINO();
             });
             //Save
             $("#saveFile").click(function() {
@@ -175,6 +189,7 @@
               document.getElementById("savePopup").style.display = "none";
               document.getElementById("importPopup").style.display = "none";
               document.getElementById("loadLangPopup").style.display = "none";
+              document.getElementById("newPopup").style.display = "none";
             });
             //Help
             $("#help").click(function() {
