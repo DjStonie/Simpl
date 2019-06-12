@@ -42,7 +42,9 @@ function variableLookup(name){
 //Removes white space and changes everything to lower case
 //return = array with trimmed strings split on \n
 function codeReader(){
-    let importsAndCode = getConvertedCode();
+    const importsAndCode = getConvertedCode();
+    return [importsAndCode[0].split("\n"), importsAndCode[1].split("\n")];
+    /*
     let importCodeLines = importsAndCode[0].split("\n");
     for (line in importCodeLines) {
         importCodeLines[line] = importCodeLines[line].replace(/\s/g, "").toLowerCase();
@@ -52,6 +54,7 @@ function codeReader(){
         codeLines[line] = codeLines[line].replace(/\s/g, "").toLowerCase();
     };
     return [importCodeLines,codeLines];
+    */
 };
 
 //Splits a string on a list with operators

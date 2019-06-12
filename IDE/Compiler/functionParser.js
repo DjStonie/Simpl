@@ -47,6 +47,20 @@ function returnParser(returnStr){
     };
     return {"id": "error", "type": "error", "error": "missing statement after return"};
 };
+//Parses standard function calls
+//func = function-json with information the function call
+//codeLine = line of code where a function call was found
+function functionCallHandler(func, codeLine){
+    if (codeLine.charAt(codeLine.length - 1) === ")"){
+        const argStr = codeLine.substring(func.operator + 1, codeLine.length - 1);
+        args = functionCallArgParser(func, argStr);
+        if (args.args === "ok"){
+            return functionCallWriter(codeLine);
+        };
+        return args;
+    };
+    return {"id": "error", "type": "error", "error": "missing ) in function call"};
+};
 //Parses argument part of function calls
 //func = function-json with information the function call
 //argsStr = string with argument part of function declaration
@@ -77,7 +91,7 @@ function functionCallArgParser(func, argsStr){
     };
     return {"args": "ok"};
 };
-//Parses function calls
+//Parses function calls found within expression
 //func = function-json with information the function call
 //codeLineList = List of current line of code split by type operators
 //codeLineIndex = index of current line of Simpl code

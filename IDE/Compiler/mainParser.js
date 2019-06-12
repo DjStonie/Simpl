@@ -48,8 +48,9 @@ function lineController(codeLines){
     let indentLvl = 0;
     let writer = "";
     for (let codeLine = 0; codeLine < codeLines.length; codeLine++){
+        const currentLine = codeLines[codeLine].replace(/\s/g, "").toLowerCase();
         if (codeLines[codeLine] !== ""){
-            const lineJson = mainLineIdentifier(codeLines[codeLine]);
+            const lineJson = mainLineIdentifier(currentLine);
             let handler;
             switch (lineJson.id){
                 case "end":
@@ -61,21 +62,21 @@ function lineController(codeLines){
                     handler = lineJson;
                     break;
                 case "var":
-                    handler = varHandler(lineJson, codeLines[codeLine]);
+                    handler = varHandler(lineJson, currentLine);
                     break;
                 case "function":
                     variables.push([]);
-                    handler = functionDeclarationHandler(lineJson, codeLines[codeLine]);
+                    handler = functionDeclarationHandler(lineJson, currentLine);
                     break;
                 case "conditional":
                     variables.push([]);
-                    handler = conditionalParser(lineJson, codeLines[codeLine]);
+                    handler = conditionalParser(lineJson, currentLine);
                     break;
                 case "call":
-                    handler = functionCallParser(lineJson, codeLines[codeLine]);
+                    handler = functionCallHandler(lineJson, currentLine);
                     break;
                 case "return":
-                    handler = returnParser(codeLines[codeLine].substring(6));
+                    handler = returnParser(currentLine.substring(6));
                     break;
                 case "ccode":
                     const ccode = cParser(codeLines, codeLine);
@@ -83,7 +84,7 @@ function lineController(codeLines){
                     codeLine = ccode[1];
                     break;
                 case "comment":
-                    handler = codeLines[codeLine];
+                    handler = codeLines[codeLine]; //could be currentline / test?
                     break;
                 default:
                     return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
@@ -112,7 +113,7 @@ function mainLineIdentifier(codeLine){
     if (codeLine.startsWith("//")){
         return {"id": "comment"};
     };
-    if (codeLine === "c{"){
+    if (codeLine === "c#"){
         return {"id": "ccode"};
     };
     if (codeLine.startsWith("return")){
@@ -144,7 +145,7 @@ function mainLineIdentifier(codeLine){
     };
     for (func in functions){
         if(codeLine.startsWith(functions[func].name)){
-            return {...functions[func], "id": "call", "operator": exprIndex};
+            return {...functions[func], "id": "call", "operator": functions[func].name.length};
         };
     };
     return {"id": "error", "type": "error", "error": "keyword not found " + codeLine};
