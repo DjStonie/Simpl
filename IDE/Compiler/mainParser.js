@@ -19,7 +19,7 @@ let functions = []; //all current functions
 //Parses and translates lines of Simpl code writes out result if succesful
 //code = code to be parsed
 //return = N/A
-function mainController(code){
+function mainController(code, extension){
     //reset all current variables and functions
     variables = [[]];
     functions = [];
@@ -34,8 +34,8 @@ function mainController(code){
             writer += parsedCode;
         };
     };
-    if (writer !== ""){
-        fileWriter("CReadyCode.C", writer);
+    if (writer !== ""){    
+        fileWriter("Simpl" + extension, writer);
         writeToConsole("Success! File ready.");
     }else if (codeLines == code.length) {
         reportError({"id": "error", "type": "error", "error": "No code found", "line": 0});
@@ -59,8 +59,7 @@ function lineController(codeLines){
                     handler = "};";
                     break;
                 case "error":
-                    handler = lineJson;
-                    break;
+                    return {...lineJson, "line": codeLine};
                 case "var":
                     handler = varHandler(lineJson, currentLine);
                     break;

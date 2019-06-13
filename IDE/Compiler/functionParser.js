@@ -1,15 +1,26 @@
 //Creates a string with a function declaration
-//newFunc = function-json with information on a function declaration
+//func = function-json with information on a function declaration
 //args = string with the argument part of a function declaration
 //name = string with name of function
 //return = string with translated Simpl
-function functionWriter(newFunc){
-    return newFunc.type + " " + newFunc.name + "(" + argsWriter(func) + "){";
+function functionWriter(func){
+    funcType = func.type;
+    if (funcType === "bool"){
+        funcType = "_Bool";
+    };
+    return funcType + " " + func.name + "(" + argsWriter(func) + "){";
 };
 function argsWriter(func){
     argsStr = "";
     for (arg in func.args){
-        argStr = argsStr + func.args[arg].type + " " + func.args[arg].name;
+        argType = func.args[arg].type;
+        if (argType === "bool"){
+            argType = "_Bool";
+        };
+        argsStr = argsStr + argType + " " + func.args[arg].name;
+        if (arg != func.args.length - 1){
+            argsStr = argsStr + ", "
+        };
     };
     return argsStr;
 };
@@ -31,7 +42,7 @@ function returnWriter(returnStr){
 function functionHandler(func, codeLine){
     if (func.functiontype === "call"){
         return functionCallHandler(func, codeLine);
-    }
+    };
     return functionDeclarationHandler(func, codeLine);
 };
 
@@ -44,7 +55,7 @@ function returnParser(returnStr){
             const exprType = mainExpressionParser(returnStr, functions[functions.length - 1].type);
             if(exprType.error){
                 return exprType;
-            }
+            };
             if (functions[functions.length - 1].type === exprType.type){
                 return returnWriter(returnStr);
             };
@@ -130,6 +141,7 @@ function functionCallParser(func, codeLineList, codeLineIndex){
 //argStr = string argument part of function declaration
 //return = List of argument variabel types and names
 function functionArgHandler(argStr){
+    console.log(argStr);
     if (argStr.length > 0){
         const argList = argStr.split(",");
         let arguments = [];
@@ -185,7 +197,9 @@ function functionDeclarationHandler(newFunc, line){
         if (args.error){
             return args;
         };
-        functions.push({...newFunc, "args": args, "name": name});
+        newFunc = {...newFunc, "args": args, "name": name};
+        console.log(newFunc)
+        functions.push(newFunc);
         return functionWriter(newFunc);
     }
     else{

@@ -31,8 +31,7 @@ function varWriter(typeObj, expression){
         case "string":
             return  "char[] " + typeObj.name + " = " + expression + ";";
         case "bool":
-            //not correct syntax! false and true not handled
-            return  typeObj.type + " " + typeObj.name + " = " + correctBoolExprForC(expression) + ";"
+            return  "_Bool" + " " + typeObj.name + " = " + correctBoolExprForC(expression) + ";"
         };
     return {"type": "error", "error": "internal varWriter - no match"}
 };
