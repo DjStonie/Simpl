@@ -10,7 +10,7 @@ function intExpressionParser(expression){
     for (let expr = 0; expr < exprList.length; expr++){
         if (operatorSwitch){
             if (!(testChar(exprList[expr], intOperators))){
-                return {"type": "error", "error": "operator expected found " + exprList[expr]};
+                return {"id": "error", "type": "error", "error": "operator expected found " + exprList[expr]};
             };
             operatorSwitch = false;
         }
@@ -35,10 +35,10 @@ function intExpressionParser(expression){
         };
     };
     if (!operatorSwitch){
-        return {"type": "error", "error": "int expression ending in operator"};
+        return {"id": "error", "type": "error", "error": "int expression ending in operator"};
     };
     if (operatorSwitch){
         return {"type": "int"};
     };
-    return {"id": "error", "type": "error", "error": "missing expression"};
+    return {"id": "error", "id": "error", "type": "error", "error": "missing expression"};
 };

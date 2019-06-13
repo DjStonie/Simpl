@@ -5,13 +5,13 @@ function stringExpressionParser(expression){
     const exprList = splitOnOperator(expression, stringOperators);
     let cantBeOperator = true;
     if(testChar(exprList[exprList.length - 1], stringOperators)){
-        return {"type": "error", "error": "unexpected operator - String expression ending in operator"}
+        return {"id": "error", "type": "error", "error": "unexpected operator - String expression ending in operator"};
     };
     for (let expr = 0; expr < exprList.length; expr++){
         const nextChar = exprList[expr].charAt(0);
         if (testChar(nextChar, stringOperators)){
             if (cantBeOperator){
-                return {"type": "error", "error": "unexpected operator", "char": nextChar};
+                return {"id": "error", "type": "error", "error": "unexpected operator", "char": nextChar};
             }
             else{
                 cantBeOperator = true;

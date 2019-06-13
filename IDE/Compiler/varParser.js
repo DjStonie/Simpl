@@ -31,9 +31,9 @@ function varWriter(typeObj, expression){
         case "string":
             return  "char[] " + typeObj.name + " = " + expression + ";";
         case "bool":
-            return  "_Bool" + " " + typeObj.name + " = " + correctBoolExprForC(expression) + ";"
+            return  "_Bool" + " " + typeObj.name + " = " + correctBoolExprForC(expression) + ";";
         };
-    return {"type": "error", "error": "internal varWriter - no match"}
+    return {"id": "error", "type": "error", "error": "internal varWriter - no match"};
 };
 //Parses a variable declaration or update
 //varJson = json with information about a variable declaration

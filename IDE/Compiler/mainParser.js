@@ -12,11 +12,13 @@ const simplConditional = [{"id": "while"}, {"id": "if"}];
 //reserved words
 const cReservedWords = ["auto","else","long","switch","break","enum","register","typedef","case","extern","return","union","char","float","short","unsigned",
 "const","for","signed","void","continue","goto","sizeof","volatile","default","if","static","while","do","int","struct","_Packed","double"];
-
-let variables = [[]]; //all current variables
-let functions = []; //all current functions
+//all current variables
+let variables = [[]];
+//all current functions
+let functions = [];
 
 //Parses and translates lines of Simpl code writes out result if succesful
+//result is compatible with both C and Arduino
 //code = code to be parsed
 //return = N/A
 function mainController(code, extension){
@@ -83,7 +85,7 @@ function lineController(codeLines){
                     codeLine = ccode[1];
                     break;
                 case "comment":
-                    handler = codeLines[codeLine]; //could be currentline / test?
+                    handler = codeLines[codeLine];
                     break;
                 default:
                     return {"id": "error", "type": "error", "error": "internal error controller not found", "line": codeLine};           
@@ -98,7 +100,7 @@ function lineController(codeLines){
         };
     };
     if (indentLvl !== 0){
-        return {"id": "error", "type": "error", "error": "missing }"};
+        return {"id": "error", "type": "error", "error": "missing }", "line": codeLines.length - 1};
     };
     return writer;
 };

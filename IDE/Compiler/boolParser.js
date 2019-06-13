@@ -7,6 +7,9 @@ function findBoolOperator(expr, exprList){
     const leadingIndexIsAnOp = expr - 1 > 0 && testChar(exprList[expr - 1], boolOperators);
     return followingIndexIsAnOp || leadingIndexIsAnOp;
 };
+//Corrects syntax from Simpl to C. Doubling up on appropriate bool operators
+//expression = expression to be corrected
+//return = string with corrected syntax
 function correctBoolExprForC(expression){
     for(let i = 0; i < expression.length; i++){
         currentChar = expression.charAt(i); 

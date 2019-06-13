@@ -19,7 +19,7 @@ function argsWriter(func){
         };
         argsStr = argsStr + argType + " " + func.args[arg].name;
         if (arg != func.args.length - 1){
-            argsStr = argsStr + ", "
+            argsStr = argsStr + ", ";
         };
     };
     return argsStr;
@@ -30,22 +30,24 @@ function argsWriter(func){
 function functionCallWriter(functionCallStr){
     return correctBoolExprForC(functionCallStr) + ";";
 };
-//Creates a string with a return statemeent
+//Creates a string with a return statement
 //returnStr = string with return statement
 //return = string with translated Simpl
 function returnWriter(returnStr){
     return "return " + correctBoolExprForC(returnStr) + ";";
 };
+//no longer in use
 //Switches between function declarations and calls
 //func = function-json with information about function declaration or call
 //codeLine = current line of code where function declaration or call was found
+/*
 function functionHandler(func, codeLine){
     if (func.functiontype === "call"){
         return functionCallHandler(func, codeLine);
     };
     return functionDeclarationHandler(func, codeLine);
 };
-
+*/
 //Parses return statements
 //returnStr = the expression part of a Simpl return statement
 //return = string from returnWriter med translated Simpl or error
@@ -141,7 +143,6 @@ function functionCallParser(func, codeLineList, codeLineIndex){
 //argStr = string argument part of function declaration
 //return = List of argument variabel types and names
 function functionArgHandler(argStr){
-    console.log(argStr);
     if (argStr.length > 0){
         const argList = argStr.split(",");
         let arguments = [];
@@ -149,7 +150,7 @@ function functionArgHandler(argStr){
             for (rule in simplType){
                 if (argList[arg].startsWith(simplType[rule].id)){
                     if (simplType[rule].id === "void"){
-                        return {"type": "error", "error": "arg cannot be of type void"};
+                        return {"id": "error", "type": "error", "error": "arg cannot be of type void"};
                     };
                     const varType = simplType[rule].id;
                     const varName = argList[arg].substring(varType.length);
@@ -162,7 +163,7 @@ function functionArgHandler(argStr){
                         arguments.push({"type": varType, "name": varName});
                     }
                     else{
-                        return {"type": "error", "error": "arg - variable with same name already declared"};
+                        return {"id": "error", "type": "error", "error": "arg - variable with same name already declared"};
                     };
                 };
             };
@@ -179,7 +180,7 @@ function functionDeclarationHandler(newFunc, line){
     if(line.charAt(line.length - 1) === "{"){
         const argEndIndex = line.indexOf(")");
         if (argEndIndex < 0){
-            return {"type": "error", "error": "function syntax - missing )"};
+            return {"id": "error", "type": "error", "error": "function syntax - missing )"};
         };
         const name = line.substring(newFunc.type.length, newFunc.operator);
         const verifiedName = verifyName(name);
@@ -198,11 +199,10 @@ function functionDeclarationHandler(newFunc, line){
             return args;
         };
         newFunc = {...newFunc, "args": args, "name": name};
-        console.log(newFunc)
         functions.push(newFunc);
         return functionWriter(newFunc);
     }
     else{
-        return {"type": "error", "error": "syntax missing { at end of line"};
+        return {"id": "error", "type": "error", "error": "syntax missing { at end of line"};
     };
 };
