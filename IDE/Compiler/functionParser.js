@@ -10,13 +10,13 @@ function functionWriter(newFunc, args, name){
 //functionCallStr = string with function call
 //return = string with translated Simpl
 function functionCallWriter(functionCallStr){
-    return functionCallStr + ";";
+    return correctBoolExprForC(functionCallStr) + ";";
 };
 //Creates a string with a return statemeent
 //returnStr = string with return statement
 //return = string with translated Simpl
 function returnWriter(returnStr){
-    return "return " + returnStr + ";";
+    return "return " + correctBoolExprForC(returnStr) + ";";
 };
 //Switches between function declarations and calls
 //func = function-json with information about function declaration or call
@@ -71,7 +71,7 @@ function functionCallArgParser(func, argsStr){
         argsList = argsStr.split(",");
     };
     if (func.args.length !== argsList.length){
-        return {"id": "error", "type": "error", "error": "wrong number of arguments"};
+        return {"id": "error", "type": "error", "error": "wrong number of arguments - found " + argsList.length + " need " + func.args.length + " for function " + func.name};
     };
     for (call in argsList){
         const exprType = mainExpressionParser(argsList[call], func.args[call].type);

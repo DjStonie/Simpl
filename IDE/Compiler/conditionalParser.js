@@ -26,6 +26,7 @@ function conditionalParser(conditional, codeLine){
 //condition = the condition part of a conditional
 //return = string with translated code according to type of conditional or error
 function conditionalWriter(conditional, condition){
+    condition = correctBoolExprForC(condition);
     switch(conditional.contype){
         case "if":
             const newLine = conditional.contype + " (" + condition + "){";

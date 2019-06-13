@@ -7,6 +7,16 @@ function findBoolOperator(expr, exprList){
     const leadingIndexIsAnOp = expr - 1 > 0 && testChar(exprList[expr - 1], boolOperators);
     return followingIndexIsAnOp || leadingIndexIsAnOp;
 };
+function correctBoolExprForC(expression){
+    for(let i = 0; i < expression.length; i++){
+        currentChar = expression.charAt(i); 
+        if (testChar(currentChar, ["&", "|", "="])){
+            expression = expression.substring(0, i) + currentChar + expression.substring(i);
+            i++;
+        };
+    };
+    return expression;
+};
 //Parses a boolean expression
 //expression = expression to be parsed
 //return = {"type": "bool"} if expression is a bool otherwise actual type of expression or error
