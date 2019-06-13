@@ -3,8 +3,15 @@
 //args = string with the argument part of a function declaration
 //name = string with name of function
 //return = string with translated Simpl
-function functionWriter(newFunc, args, name){
-    return newFunc.type + " " + name + "(" + args + "){";
+function functionWriter(newFunc){
+    return newFunc.type + " " + newFunc.name + "(" + argsWriter(func) + "){";
+};
+function argsWriter(func){
+    argsStr = "";
+    for (arg in func.args){
+        argStr = argsStr + func.args[arg].type + " " + func.args[arg].name;
+    };
+    return argsStr;
 };
 //Creates a string with a function call
 //functionCallStr = string with function call
@@ -179,7 +186,7 @@ function functionDeclarationHandler(newFunc, line){
             return args;
         };
         functions.push({...newFunc, "args": args, "name": name});
-        return functionWriter(newFunc, argsStr, name);
+        return functionWriter(newFunc);
     }
     else{
         return {"type": "error", "error": "syntax missing { at end of line"};
