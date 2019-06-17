@@ -9,6 +9,7 @@ function createIndent(indentLvl){
     return indent;
 }
 //Writes a file to disk with specified name
+//writes a file to disk
 //name = string with name of new file
 //writer = string to be written to file
 //return = N/A
