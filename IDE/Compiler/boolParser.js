@@ -1,11 +1,24 @@
 //looks for af boolean operator on each side of an expression
-//expr = index of where expression is found
+//exprIndex = index of where expression is found
 //exprList = List of expressions split buy boolean operators
 //return = true if there is a boolean operator on either side of expression exprList[expr]
-function findBoolOperator(expr, exprList){
-    const followingIndexIsAnOp = expr < exprList.length - 1 && testChar(exprList[expr + 1], boolOperators);
-    const leadingIndexIsAnOp = expr - 1 > 0 && testChar(exprList[expr - 1], boolOperators);
+function findBoolOperator(exprIndex, exprList){
+    const followingIndexIsAnOp = exprIndex < exprList.length - 1 && testChar(exprList[exprIndex + 1], boolOperators);
+    const leadingIndexIsAnOp = exprIndex - 1 > 0 && testChar(exprList[exprIndex - 1], boolOperators);
     return followingIndexIsAnOp || leadingIndexIsAnOp;
+};
+//Corrects syntax from Simpl to C. Doubling up on appropriate bool operators
+//expression = expression to be corrected
+//return = string with corrected syntax
+function correctBoolExprForC(expression){
+    for(let i = 0; i < expression.length; i++){
+        currentChar = expression.charAt(i); 
+        if (testChar(currentChar, ["&", "|", "="])){
+            expression = expression.substring(0, i) + currentChar + expression.substring(i);
+            i++;
+        };
+    };
+    return expression;
 };
 //Parses a boolean expression
 //expression = expression to be parsed
@@ -19,7 +32,7 @@ function boolExpressionParser(expression){
     for (let expr = 0; expr < exprList.length; expr++){
         if (operatorSwitch){
             if (!(testChar(exprList[expr], boolOperators))){
-                return {"type": "error", "error": "operator expected found " + exprList[expr]};
+                return {"id": "error", "type": "error", "error": "operator expected found " + exprList[expr]};
             };
             operatorSwitch = false;
         }

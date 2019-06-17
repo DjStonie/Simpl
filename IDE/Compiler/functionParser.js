@@ -1,33 +1,53 @@
 //Creates a string with a function declaration
-//newFunc = function-json with information on a function declaration
+//func = function-json with information on a function declaration
 //args = string with the argument part of a function declaration
 //name = string with name of function
 //return = string with translated Simpl
-function functionWriter(newFunc, args, name){
-    return newFunc.type + " " + name + "(" + args + "){";
+function functionWriter(func){
+    funcType = func.type;
+    if (funcType === "bool"){
+        funcType = "_Bool";
+    };
+    return funcType + " " + func.name + "(" + argsWriter(func) + "){";
+};
+function argsWriter(func){
+    argsStr = "";
+    for (arg in func.args){
+        argType = func.args[arg].type;
+        if (argType === "bool"){
+            argType = "_Bool";
+        };
+        argsStr = argsStr + argType + " " + func.args[arg].name;
+        if (arg != func.args.length - 1){
+            argsStr = argsStr + ", ";
+        };
+    };
+    return argsStr;
 };
 //Creates a string with a function call
 //functionCallStr = string with function call
 //return = string with translated Simpl
 function functionCallWriter(functionCallStr){
-    return functionCallStr + ";";
+    return correctBoolExprForC(functionCallStr) + ";";
 };
-//Creates a string with a return statemeent
+//Creates a string with a return statement
 //returnStr = string with return statement
 //return = string with translated Simpl
 function returnWriter(returnStr){
-    return "return " + returnStr + ";";
+    return "return " + correctBoolExprForC(returnStr) + ";";
 };
+//no longer in use
 //Switches between function declarations and calls
 //func = function-json with information about function declaration or call
 //codeLine = current line of code where function declaration or call was found
+/*
 function functionHandler(func, codeLine){
     if (func.functiontype === "call"){
         return functionCallHandler(func, codeLine);
-    }
+    };
     return functionDeclarationHandler(func, codeLine);
 };
-
+*/
 //Parses return statements
 //returnStr = the expression part of a Simpl return statement
 //return = string from returnWriter med translated Simpl or error
@@ -37,7 +57,7 @@ function returnParser(returnStr){
             const exprType = mainExpressionParser(returnStr, functions[functions.length - 1].type);
             if(exprType.error){
                 return exprType;
-            }
+            };
             if (functions[functions.length - 1].type === exprType.type){
                 return returnWriter(returnStr);
             };
@@ -71,7 +91,7 @@ function functionCallArgParser(func, argsStr){
         argsList = argsStr.split(",");
     };
     if (func.args.length !== argsList.length){
-        return {"id": "error", "type": "error", "error": "wrong number of arguments"};
+        return {"id": "error", "type": "error", "error": "wrong number of arguments - found " + argsList.length + " need " + func.args.length + " for function " + func.name};
     };
     for (call in argsList){
         const exprType = mainExpressionParser(argsList[call], func.args[call].type);
@@ -130,7 +150,7 @@ function functionArgHandler(argStr){
             for (rule in simplType){
                 if (argList[arg].startsWith(simplType[rule].id)){
                     if (simplType[rule].id === "void"){
-                        return {"type": "error", "error": "arg cannot be of type void"};
+                        return {"id": "error", "type": "error", "error": "arg cannot be of type void"};
                     };
                     const varType = simplType[rule].id;
                     const varName = argList[arg].substring(varType.length);
@@ -143,7 +163,7 @@ function functionArgHandler(argStr){
                         arguments.push({"type": varType, "name": varName});
                     }
                     else{
-                        return {"type": "error", "error": "arg - variable with same name already declared"};
+                        return {"id": "error", "type": "error", "error": "arg - variable with same name already declared"};
                     };
                 };
             };
@@ -160,7 +180,7 @@ function functionDeclarationHandler(newFunc, line){
     if(line.charAt(line.length - 1) === "{"){
         const argEndIndex = line.indexOf(")");
         if (argEndIndex < 0){
-            return {"type": "error", "error": "function syntax - missing )"};
+            return {"id": "error", "type": "error", "error": "function syntax - missing )"};
         };
         const name = line.substring(newFunc.type.length, newFunc.operator);
         const verifiedName = verifyName(name);
@@ -178,10 +198,11 @@ function functionDeclarationHandler(newFunc, line){
         if (args.error){
             return args;
         };
-        functions.push({...newFunc, "args": args, "name": name});
-        return functionWriter(newFunc, argsStr, name);
+        newFunc = {...newFunc, "args": args, "name": name};
+        functions.push(newFunc);
+        return functionWriter(newFunc);
     }
     else{
-        return {"type": "error", "error": "syntax missing { at end of line"};
+        return {"id": "error", "type": "error", "error": "syntax missing { at end of line"};
     };
 };

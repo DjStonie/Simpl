@@ -200,8 +200,13 @@
             });
             //Compile code to C
             $( "#compile-c" ).click(() => {
-                event.preventDefault();
-                mainController(codeReader());
+              event.preventDefault();
+              mainController(codeReader(), ".c");
+            });
+            //Compile code for Arduino
+            $("#compile-ino").click(() => {
+              event.preventDefault();
+              mainController(codeReader(), ".ino");
             });
     });
 
