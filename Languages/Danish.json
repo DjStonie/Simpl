@@ -11,7 +11,7 @@
     "compileino": ".ino",
     "compilec": ".c",
     "Run": "Kør",
-    "helpTitle": "Hjælp",
+    "file": "Fil",
     "saveProj": "Gem project",
     "saveExtern": "Gem",
     "loadProj": "Indlæs project",
