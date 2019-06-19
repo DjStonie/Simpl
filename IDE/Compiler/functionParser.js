@@ -58,10 +58,11 @@ function returnParser(returnStr){
             if(exprType.error){
                 return exprType;
             };
-            if (functions[functions.length - 1].type === exprType.type){
+            const functionType = functions[functions.length - 1].type;
+            if (functionType === exprType.type){
                 return returnWriter(returnStr);
             };
-            return {"id": "error", "type": "error", "error": "return function type mismatch"};
+            return {"id": "error", "type": "error", "error": "return function type mismatch expected " + functionType + " found " + exprType.type};
         };
         return {"id": "error", "type": "error", "error": "return type void cannot return"};
     };
@@ -100,12 +101,12 @@ function functionCallArgParser(func, argsStr){
         };
         if (func.args[call].type === "int"){
             if (exprType.type !== "int"){
-                return {"id": "error", "type": "error", "error": "function argument type mismatch"};
+                return {"id": "error", "type": "error", "error": "function " + func.name + " argument " + (parseInt(call) + 1) + " type mismatch expected int found " + exprType.type};
             };
         };
         if (func.args[call].type === "bool"){
             if (exprType.type !== "bool"){
-                return {"id": "error", "type": "error", "error": "function argument type mismatch"};
+                return {"id": "error", "type": "error", "error": "function " + func.name + "argument " + (parseInt(call) + 1) + " type mismatch expected bool found " + exprType.type};
             };
         };
     };
