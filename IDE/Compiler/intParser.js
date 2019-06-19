@@ -35,6 +35,9 @@ function intExpressionParser(expression){
         };
     };
     if (!operatorSwitch){
+        if (expression.length < 1){
+            return {"id": "error", "type": "error", "error": "int expression not found"};
+        };
         return {"id": "error", "type": "error", "error": "int expression ending in operator"};
     };
     if (operatorSwitch){
