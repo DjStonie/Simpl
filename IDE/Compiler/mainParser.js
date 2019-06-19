@@ -36,7 +36,10 @@ function mainController(code, extension){
             writer += parsedCode;
         };
     };
-    if (writer !== ""){    
+    if (writer !== ""){
+        if (extension === ".c"){
+            writer = "#include <stdbool.h>\n\n" + writer;
+        };
         fileWriter("Simpl" + extension, writer);
         writeToConsole("Success! File ready.");
     }else if (codeLines == code.length) {
